@@ -1,0 +1,41 @@
+services:
+  classifier:
+    build:
+      context: ./services/classifier
+      network: host
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+
+  processor:
+    build:
+      context: .
+      dockerfile: ./services/processor/Dockerfile
+      network: host
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - classifier
+    restart: unless-stopped
+
+  core_app:
+    build:
+      context: ./core_app
+      network: host
+    ports:
+      - "8081:8081"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - processor
+    restart: unless-stopped
+
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped

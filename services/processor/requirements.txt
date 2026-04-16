@@ -1,0 +1,14 @@
+watchdog==4.0.0
+numpy==1.26.4
+pandas==2.2.1
+scipy==1.13.0
+scikit-image==0.22.0
+netCDF4==1.6.5
+folium==0.16.0
+matplotlib==3.8.3
+requests==2.31.0
+python-dotenv==1.0.1
+xarray==2024.2.0
+redis==5.0.3
+html2image==2.0.4
+fpdf2==2.8.0

@@ -1,0 +1,57 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ---------- Virtual environments ----------
+hurakan_env/
+.venv/
+venv/
+env/
+
+# ---------- Environment and local secrets ----------
+.env
+.env.*
+!.env.example
+
+# ---------- Tooling caches ----------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# ---------- Editors / OS ----------
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ---------- Build / packaging ----------
+build/
+dist/
+*.egg-info/
+
+# ---------- Runtime logs ----------
+*.log
+data/logs/
+
+# ---------- Project generated data ----------
+data/db/
+data/map_outputs/
+data/noaa_files/
+data/nodes/
+data/nodes_stitch/
+data/raw_nc/
+data/temp/
+
+# ---------- ML artifacts ----------
+services/classifier/ensemble_seed_2/**
+services/classifier/modelos_ensamble/**
+
+# ---------- Local machine config ----------
+services/download_data/config.py

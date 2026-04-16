@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error de Procesamiento</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; color: #dc3545; }
+        .icon { font-size: 3em; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <i class="fas fa-times-circle icon"></i>
+    <h2>Error durante el procesamiento</h2>
+    <p>Timestamp: {{ timestamp }}</p>
+    <p>Archivo: {{ nc_file }}</p>
+    <p><strong>Error:</strong> {{ error }}</p>
+    <p>Por favor, inténtelo de nuevo más tarde o contacte al administrador.</p>
+</body>
+</html>

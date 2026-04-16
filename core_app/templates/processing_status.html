@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Procesando Datos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; }
+        .spinner { font-size: 3em; margin-bottom: 20px; color: #007bff; }
+    </style>
+</head>
+<body>
+    <i class="fas fa-spinner fa-spin spinner"></i>
+    <h2>Procesando los datos más recientes...</h2>
+    <p>Archivo: {{ latest_nc_file }}</p>
+    <p>Timestamp: {{ latest_timestamp }}</p>
+    <p id="processing-time">Tiempo transcurrido: 0 segundos</p>
+
+    <script>
+        let startTime;
+        let statusInterval;
+
+        function updateTime() {
+            if (startTime) {
+                const currentTime = new Date().getTime();
+                const elapsedTime = Math.floor((currentTime - startTime) / 1000);
+                document.getElementById('processing-time').innerText = `Tiempo transcurrido: ${elapsedTime} segundos`;
+            }
+        }
+
+        function checkStatus() {
+            fetch('/status-update')
+                .then(response => response.json())
+                .then(data => {
+                    if (!startTime && data.processing && data.timestamp === "{{ latest_timestamp }}") {
+                        startTime = new Date().getTime();
+                        setInterval(updateTime, 1000); // Actualizar el tiempo cada segundo
+                    }
+
+                    if (data.map_ready && data.timestamp === "{{ latest_timestamp }}") {
+                        window.location.href = "/"; // Recarga la página principal para servir el mapa
+                        clearInterval(statusInterval); // Detener la verificación
+                    } else if (data.error && data.timestamp === "{{ latest_timestamp }}") {
+                        window.location.href = "/"; // Recarga para mostrar el error
+                        clearInterval(statusInterval);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al verificar el estado:', error);
+                });
+        }
+        statusInterval = setInterval(checkStatus, 6000);
+    </script>
+</body>
+</html>
