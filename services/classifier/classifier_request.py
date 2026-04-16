@@ -18,7 +18,7 @@ def run_ensemble_prediction(features_dict):
     Args:
         features_dict (dict): Dictionary containing the following keys:
             - n_trayectorias_best_cluster: list[int]
-            - dispersión_km_best_cluster: list[float]  (accent required — matches trained model)
+            - dispersion_km_best_cluster: list[float]  (no accent — API renames internally)
             - horas_diff_estimadas: list[float]
             
     Returns:
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # Local test block with the exact schema the server expects
     test_features = {
         "n_trayectorias_best_cluster": [14],
-        "dispersión_km_best_cluster": [529.56],
+        "dispersion_km_best_cluster": [529.56],
         "horas_diff_estimadas": [276.0]
     }
     proba, pred = run_ensemble_prediction(test_features)

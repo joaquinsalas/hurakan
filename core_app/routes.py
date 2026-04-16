@@ -6,8 +6,8 @@ from flask import (
     redirect, url_for, request, flash, jsonify
 )
 from flask_login import login_required, logout_user, current_user, login_user
-from core_app.forms import LoginForm
-from core_app.models import User
+from forms import LoginForm
+from models import User
 from dotenv import load_dotenv
 
 routes_bp = Blueprint('routes', __name__)

@@ -1,7 +1,7 @@
 import os
 from flask import Flask
-from core_app.routes import routes_bp
-from core_app.extensions import db, migrate, login_manager
+from routes import routes_bp
+from extensions import db, migrate, login_manager
 from dotenv import load_dotenv
 
 load_dotenv()
