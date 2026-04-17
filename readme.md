@@ -1,6 +1,6 @@
 # Deployment version
 
-This directory contains a more complete and modular version of the Hurakan system, organized as a small multi-service application.
+This directory contains a complete and modular version of the **Hurakán** system, organized as a multi-service application.
 
 ## Overview
 - `core_app`: Flask frontend for authentication and map serving.
@@ -12,6 +12,10 @@ This directory contains a more complete and modular version of the Hurakan syste
 
 ## User manual
 See [Manual](./usermanual.md) for detailed instructions to use Hurakán.
+
+
+## Installation manual
+
 
 ## App files stucture
 See [File Structure](./filestructure.md) for visualizing the file organization for Hurakán.
