@@ -48,6 +48,7 @@ data/nodes/
 data/nodes_stitch/
 data/raw_nc/
 data/temp/
+data/output/
 
 # ---------- ML artifacts ----------
 services/classifier/ensemble_seed_2/**
