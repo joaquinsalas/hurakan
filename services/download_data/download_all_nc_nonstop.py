@@ -32,7 +32,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from dask.distributed import Client, LocalCluster #multiprocesamiento
 
-from config import txt_time_dir, token_file, credentials_file, pacific_polygon, atlantic_polygon, EARTHENGINE_TOKEN, log_file, datasets_dir, app_dir #rutas
+from config import txt_time_dir, token_file, credentials_file, pacific_polygon, atlantic_polygon, log_file, datasets_dir, app_dir #rutas
 from config import variables # vars meteorologicas desde WN
 from config import project_name #google cloud project
 from config import SCOPES, timezone #otros
@@ -735,8 +735,8 @@ def main():
         # Obtener la hora actual en la zona horaria de México
         now_mexico = datetime.now(standar_time_zone)
         ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
-        now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0)
-        #now_mexico = now_mexico.replace(hour=6, minute=0, second=0, microsecond=0)
+        #now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0)
+        now_mexico = now_mexico.replace(hour=12, minute=0, second=0, microsecond=0)
         # crear el nombre de archivo si está dentro del horario permitido
         fecha_string = now_mexico.strftime('%Y%m%d_%H')
 

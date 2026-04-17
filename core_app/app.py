@@ -14,7 +14,8 @@ def create_app():
 
     # --- Configuration Setup ---
     # Using absolute path for the SQLite database
-    base_dir = os.path.abspath(os.path.dirname(__file__))
+    #base_dir = os.path.abspath(os.path.dirname(__file__))
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
     # Ensure DATABASE_FILE from .env is converted to an absolute path dynamically based on base_dir (e.g. /app/...)
     db_file = os.getenv("DATABASE_FILE", "./data/db/app_database.db").lstrip("./")

@@ -24,5 +24,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # services.utils and other shared packages
 COPY . .
 
+RUN chmod +x /app/services/processor/bin/DetectNodes \
+    /app/services/processor/bin/StitchNodes
+
 # Run the monitor service
 CMD ["python3", "-m", "services.processor.monitor_service"]
