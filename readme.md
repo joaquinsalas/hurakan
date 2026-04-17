@@ -15,7 +15,7 @@ See [Manual](./usermanual.md) for detailed instructions to use Hurakán.
 
 
 ## Installation manual
-<place holder>
+ **  place holder **
 
 
 ## App files stucture
