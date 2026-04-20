@@ -1,8 +1,4 @@
-# `Hurakán`
-
-<p align="center"> This repository contains several versions of a tropical-cyclone forecasting and analysis workflow.
-    <br> 
-</p>
+# `Hurakán Installation`
 
 ## Table of Contents
 - [About](#about)
@@ -15,9 +11,11 @@
 - [Acknowledgments](#acknowledgement)
 
 ## About <a name = "about"></a>
-Hurakán is web-based platform that provides forecasts of tropical cyclone (TC) trajectories.
+Hurakán is multi-service web-based platform that provides forecasts of tropical cyclone (TC) trajectories.
 
 It integrates atmospheric scenarios produced by probabilistic data-driven forecasting systems. Also, it Uses globally available data, but requires Regions of Interest (RoI) to focus to certain areas like specific coastlines.
+
+Requires a web server (to donwload and process atmospheric data, and show them as interactive maps, on a daily basis; also, to classify the data aalyzed to improve the identification of possible tropical cyclones), and a web client. 
 
 
 ## Getting Started <a name = "getting_started"></a>
@@ -26,16 +24,15 @@ Python and other software is needed. For simplicity, we recommend to use a Docke
 You need a computer as web server (where this project executes) and other as client (to interact with the web interfase) using a web browser (without Docker).
 
 ### Prerequisites
-Hurakán rely on several Python libraries, Matlab and Docker. When installing, the required libraries will be downloaded from open software repositories.
+Hurakán rely on several Python (3.11+) libraries and Docker. When installing, the required libraries will be downloaded from open software repositories.
 Docker Engine is open software, but Docker Desktop is propietary and required at least a subscription. For instructions to install on Windows. macOS o GNU/Linux see [Docker Desktop](https://docs.docker.com/desktop/#next-steps)
-For installing Matlab, also propietary, see [Matlab Installer](https://www.mathworks.com/help/install/ug/install-products-with-internet-connection.html)
 Hurakán also requires atmospherical data from a specific day, like for example, today.
 
 ### Installation
 1. Clone repository
 ``````````````````````````````````````````````````````````````````````````````````
-git clone https://github.com/joaquinsalas/forecastingTCs
-cd forecastingTCs
+git clone https://github.com/joaquinsalas/hurakan
+cd hurakan
 ```````````````````````````````````````````````````````````````````````````````````
 2.Create a virtual environment (required libraries installed only in the virtual environment)
 ```````````````````````````````````````````````````````````````````````````````````
@@ -52,7 +49,7 @@ source .venv/bin/activate
 ```````````````````````````````````````````````````````````````````````````````````
 After the activation, the system prompt includes the name and parenthesis: 
 ```````````````````````````````````````````````````````````````````````````````````
-(.venv) forecastingTCs$
+(.venv) hurakan$
 ```````````````````````````````````````````````````````````````````````````````````
 4. Install dependencies
 ```````````````````````````````````````````````````````````````````````````````````
@@ -78,7 +75,7 @@ To use the application, from a client machine
 ```````````````````````````````````````````````````````````````````````````````````
 Open http://127.0.0.1:8081 to view in the browser.
 ```````````````````````````````````````````````````````````````````````````````````
-For detailed information see [User Manual](<whole version/usermanual.md>)
+For detailed information see [User Manual](./usermanual.md)
 
 ## Deployment <a name = "deployment"></a>
 As mentioned, you can build the Docker image in Windows, macOS or GNU/Linux, but you must run the container in the same OS version (for example, build on Windows 11 and run on Windows 11).
@@ -97,7 +94,6 @@ docker compose down
 - [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
 - [Docker](https://docker.com/) - A safer container ecosystem
 - [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) - Collection of detection and characterization algorithms for large climate datasets
-- [NodeJs](https://nodejs.org/en/) - Server Environment
 - [OpenStreetMap](https://www.openstreetmap.org/) - Map of the world
 - [Leaflet](https://leafletjs.com/) - An open-source JavaScript library
 for mobile-friendly interactive maps
