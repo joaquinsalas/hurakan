@@ -52,7 +52,9 @@ See [File Structure](./core_app/docs/manuals/filestructure.md) for visualizing t
 - [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
 - [Docker](https://docker.com/) - A safer container ecosystem
 - [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) - Collection of detection and characterization algorithms for large climate datasets
-- [NodeJs](https://nodejs.org/en/) - Server Environment
+- [FastAPI](https://fastapi.tiangolo.com) - FastAPI framework, high performance, easy to learn, fast to code, ready for production
+- [PyTorch](https://pytorch.org) - PyTorch is an open-source deep learning library
+- [NetCDF](https://en.wikipedia.org/wiki/NetCDF) - Scientific Data Formats by Unidata program at University Corporation for Atmospheric Research (UCAR)
 - [OpenStreetMap](https://www.openstreetmap.org/) - Map of the world
 - [Leaflet](https://leafletjs.com/) - An open-source JavaScript library
 for mobile-friendly interactive maps
