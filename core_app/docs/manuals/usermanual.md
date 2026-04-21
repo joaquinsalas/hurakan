@@ -72,10 +72,10 @@ Figure 8. The size of the scale in the map is shown in the left down corner, bel
 
 - Interactive visualization. On the map, the central point can be moved, and zooming in or out can be done within a range of 1000 km to 10 m
 
-<img src="../figures/hurakan_zooin.png" alt="Button zoom in" />
+<img src="../figures/hurakan_zoomin.png" alt="Button zoom in" />
 Figure 9. The size of the scale in the map can be reduced with the `Zoom in` button at the right top corner with the `+` sign or the mouse wheel.
 
-<img src="../figures/hurakan_zooout.png" alt="Button zoom out" />
+<img src="../figures/hurakan_zoomout.png" alt="Button zoom out" />
 Figure 10. The size of the scale in the map can be augmented with the `Zoom out` button at the right top corner with the `-` sign or the mouse wheel.
 
 ## Interface description
