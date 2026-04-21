@@ -1,4 +1,4 @@
-# `whole version/services/clusterer`
+# `services/clusterer`
 
 This directory contains the trajectory clustering engine.
 

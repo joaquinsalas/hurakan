@@ -1,4 +1,4 @@
-# `whole version/services/utils`
+# `services/utils`
 
 This directory contains shared helper modules used across the modular Hurakan services.
 
