@@ -62,7 +62,8 @@ After the activation, the system prompt includes the name and parenthesis:
 ```````````````````````````````````````````````````````````````````````````````````
 (.venv) hurakan$ cp .env.example .env
 ```````````````````````````````````````````````````````````````````````````````````
-[!NOTE]Note: You can export the variables in the .env file or install python-dotenv for the next step
+> [!NOTE]
+> Note: You can export the variables in the .env file or install python-dotenv for the next step
 Install python-dotenv
 ```````````````````````````````````````````````````````````````````````````````````
 (.venv) hurakan$ pip install python-dotenv
@@ -71,7 +72,8 @@ Install python-dotenv
 ```````````````````````````````````````````````````````````````````````````````````
 (.venv) hurakan$ python services/utils/init_folders.py
 ```````````````````````````````````````````````````````````````````````````````````
-[!NOTE]Note: python is the command to executo Python 3.11+ inside the virtual environment .venv
+> [!NOTE]
+> Note: python is the command to executo Python 3.11+ inside the virtual environment .venv
 6. Build and run docker image with services
 ```````````````````````````````````````````````````````
 (.venv) hurakan$ docker compose up --build
@@ -120,12 +122,14 @@ classifier-1  | INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C t
 (.venv) hurakan$ pip install -r librerias_download.txt
 ```````````````````````````````````````````````````````````````````````````````````
 10. Generar credenciales en Google Drive API
-[!NOTE]Note: Get both the Token (JSON type) and Credentials (JSON type) files to get access to Google Drive API 
+> [!NOTE]
+> Note: Get both the Token (JSON type) and Credentials (JSON type) files to get access to Google Drive API 
 11. Modify the values of some directories in your device in the file .env with an editor
 ```````````````````````````````````````````````````````````````````````````````````
 (.venv) hurakan$ nano .env
 ```````````````````````````````````````````````````````````````````````````````````
-[!NOTE]Note: Change TOKEN_FILE and CREDENTIALS_FILE variables for get access to Google Drive API and DATA_RAW_DIR whre the atmospheric data will be downloaded
+> [!NOTE]
+> Note: Change TOKEN_FILE and CREDENTIALS_FILE variables for get access to Google Drive API and DATA_RAW_DIR whre the atmospheric data will be downloaded
 12. Execute data downloader:
 As a shell script:
 ```````````````````````````````````````````````````````````````````````````````````
