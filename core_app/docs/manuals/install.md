@@ -38,7 +38,8 @@ cd hurakan
 ```````````````````````````````````````````````````````````````````````````````````
 python3 -m venv .venv
 ```````````````````````````````````````````````````````````````````````````````````
-[!NOTE]Note: python3 is the command to execute Python 3.11+ in the original system
+> [!NOTE]
+> Note: python3 is the command to execute Python 3.11+ in the original system
 3.Activate the virtual environment
 -Windows:
 ```````````````````````````````````````````````````````````````````````````````````
@@ -75,7 +76,8 @@ Install python-dotenv
 ```````````````````````````````````````````````````````
 (.venv) hurakan$ docker compose up --build
 ```````````````````````````````````````````````````````
-[!TIP]Note: Can take a lot of time for the first time, depending on the download speed for the internet service
+> [!TIP]
+> Note: Can take a lot of time for the first time, depending on the download speed for the internet service
 Getting output like
 ```````````````````````````````````````````````````````
 ...
