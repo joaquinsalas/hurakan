@@ -127,15 +127,18 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
     trajs_pacific = collect_trajectories_by_region(common_stitch_dir, timestamp, 'pacifico')
     trajs_atlantic = collect_trajectories_by_region(common_stitch_dir, timestamp, 'atlantico')
     all_trajectories = trajs_pacific + trajs_atlantic
+    centro_inicial = [23.6, -95]
 
     if not all_trajectories:
         logger.warning("No trajectories found for combined map.")
-        m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron")
+        m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron", no_wrap=True, min_zoom=3)
         m.save(os.path.join(output_dir, f'map_{timestamp}.html'))
         return True
 
     # 2. Base map setup
-    m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron")
+    m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron", max_bounds=True,
+        min_lat=-90, max_lat=90,
+        min_lon=-180, max_lon=180, min_zoom=3)
 
     try:
         # Define la ruta a la carpeta donde guardarás los shapefiles
@@ -430,6 +433,27 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
     </script>
     """
     m.get_root().html.add_child(Element(timeline_control_html))
+
+    center_btn_html = f"""
+            <div style="position: fixed; top: 80px; left: 10px; z-index: 9999; background-color: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 4px; box-shadow: 0 1px 5px rgba(0,0,0,0.65);">
+                <a href="#" onclick="recenterMap(); return false;" title="Centrar al origen de la tormenta" style="display: block; width: 30px; height: 30px; line-height: 30px; text-align: center; text-decoration: none; color: black; font-size: 22px; font-weight: bold;">
+                    ⌖
+                </a>
+            </div>
+            <script>
+                function recenterMap() {{
+                    var map = window["{m.get_name()}"];
+                    if (map) {{
+                        // Mueve la cámara suavemente a las coordenadas iniciales con zoom 5
+                        map.flyTo([{centro_inicial[0]}, {centro_inicial[1]}], 5, {{
+                            animate: true,
+                            duration: 1.0
+                        }});
+                    }}
+                }}
+            </script>
+        """
+    m.get_root().html.add_child(Element(center_btn_html))
 
     combined_map_path = os.path.join(output_dir, f'map_{timestamp}.html')
     m.save(combined_map_path)
