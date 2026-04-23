@@ -3,6 +3,7 @@ import json
 import glob
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import netCDF4
 import folium
 import matplotlib.dates as mdates
@@ -135,6 +136,43 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
 
     # 2. Base map setup
     m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron")
+
+    try:
+        # Define la ruta a la carpeta donde guardarás los shapefiles
+        shapefile_dir = os.path.join(os.getcwd(), 'data', 'assets', 'shapefiles')
+
+        # Cargar Pacífico
+        pacifico_shp = os.path.join(shapefile_dir, 'pacifico_shp_grande.shp')  # Asegúrate que el archivo se llame así
+        if os.path.exists(pacifico_shp):
+            gdf_pacifico = gpd.read_file(pacifico_shp)
+            folium.GeoJson(
+                gdf_pacifico,
+                name="Limites Pacífico",
+                style_function=lambda x: {
+                    'color': '#D0D0D0',
+                    'weight': 2,
+                    'opacity': 1.5,
+                    'fill':False
+                }
+            ).add_to(m)
+
+        # Cargar Atlántico
+        atlantico_shp = os.path.join(shapefile_dir, 'atlantico_shp_grande.shp')  # Asegúrate que el archivo se llame así
+        if os.path.exists(atlantico_shp):
+            gdf_atlantico = gpd.read_file(atlantico_shp)
+            folium.GeoJson(
+                gdf_atlantico,
+                name="Limit Atlántico",
+                style_function=lambda x: {
+                    'color': '#D0D0D0',
+                    'weight': 2,
+                    'opacity': 1.5,
+                    'fill': False
+                }
+            ).add_to(m)
+
+    except Exception as e:
+        logger.error(f"Error al cargar las regiones de análisis: {e}", exc_info=True)
 
     # 3. Locate original .nc file for metadata
     nc_file_path = None
