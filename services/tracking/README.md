@@ -1,4 +1,4 @@
-# `whole version/services/tracking`
+# `services/tracking`
 
 This directory contains very little executable logic at the moment.
 

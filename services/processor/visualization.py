@@ -272,12 +272,13 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
 
             # AI Analysis (Classifier API)
             disp_km, _ = calculate_initial_cluster_dispersion(filtered_list)
-            lead_h = (estimated_date - base_dt).total_seconds() / 3600
+            lead_h = (base_dt - estimated_date).total_seconds() / 3600
             features = {
                 "n_trayectorias_best_cluster": [len(filtered_list)],
                 "dispersion_km_best_cluster": [disp_km],
                 "horas_diff_estimadas": [lead_h]
             }
+            #print(features)
             
             prob, pred = run_ensemble_prediction(features) #Get probability and predicted category from classifier
 

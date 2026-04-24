@@ -1,4 +1,4 @@
-# `whole version/services/evaluation`
+# `services/evaluation`
 
 This directory contains historical evaluation tools for forecast trajectories.
 

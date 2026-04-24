@@ -1,4 +1,4 @@
-# `whole version/services/processor`
+# `services/processor`
 
 This directory contains the core operational pipeline that processes ensemble NetCDF files and turns them into interactive maps.
 

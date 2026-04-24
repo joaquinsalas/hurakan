@@ -55,9 +55,9 @@ def run_ensemble_prediction(features_dict):
 if __name__ == "__main__":
     # Local test block with the exact schema the server expects
     test_features = {
-        "n_trayectorias_best_cluster": [14],
-        "dispersion_km_best_cluster": [529.56],
-        "horas_diff_estimadas": [276.0]
+        "n_trayectorias_best_cluster": [56],
+        "dispersion_km_best_cluster": [281.39],
+        "horas_diff_estimadas": [-24.0]
     }
     proba, pred = run_ensemble_prediction(test_features)
     print(f"Test Result -> Probability: {proba:.2%} | Prediction: {pred}")

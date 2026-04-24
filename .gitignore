@@ -56,3 +56,6 @@ services/classifier/modelos_ensamble/**
 
 # ---------- Local machine config ----------
 services/download_data/config.py
+services/download_data/auxiliary_files_atlantico
+services/download_data/auxiliary_files_pacifico
+services/download_data/token.json

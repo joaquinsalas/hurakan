@@ -13,12 +13,15 @@ def create_app():
     app = Flask(__name__)
 
     # --- Configuration Setup ---
-    # Using absolute path for the SQLite database
+    # Resolve SQLite database path relative to this app directory unless an absolute path is provided.
     base_dir = os.path.abspath(os.path.dirname(__file__))
-    
-    # Ensure DATABASE_FILE from .env is converted to an absolute path dynamically based on base_dir (e.g. /app/...)
-    db_file = os.getenv("DATABASE_FILE", "./data/db/app_database.db").lstrip("./")
-    db_path = os.path.join(base_dir, db_file)
+    db_file = os.getenv("DATABASE_FILE", "./data/db/app_database.db")
+    if os.path.isabs(db_file):
+        db_path = db_file
+    else:
+        db_path = os.path.abspath(os.path.join(base_dir, db_file))
+
+    os.makedirs(os.path.dirname(db_path), exist_ok=True)
     
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
@@ -47,4 +50,4 @@ if __name__ == "__main__":
         
     print("Starting Hurakan Flask Server...")
     # Running on 0.0.0.0 to allow access within Docker or local network
-    app.run(debug=True, host='0.0.0.0', port=8081)
+    app.run(debug=True, host='0.0.0.0', port=443)

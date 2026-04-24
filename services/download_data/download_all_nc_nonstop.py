@@ -5,6 +5,12 @@
 #cada 6 horas ejecuta la descarga de la imagen más reciente y la guarda en una carpeta
 #primero descarga el pacífico y cuando termina descarga el atlántico
 
+
+#de los errores de red:
+# hay unos que pueden intentarse un par de veces y continuar con el siguiente proceso aunque no haya red. Por ejemplo: si no se pudo borrar un archivo de la papelera,se intenta con el siguiente
+# hay unos que puden intentarse un par de vees, pero regresar al inicio si es se acaban los intento (por ejemplo, error 500 tratando descargar un archivo. Dede regresar al incio, porque si tarda mucho, puede que ya ni siquiera necesitemos ese arhchivo cuando se reestablezca la conexión)
+# hay otros que deben intentarse indefinidamente en el mismo punto hasta regresar al inico (como la primera autentificación)
+
 import ee
 import xarray as xr
 import rioxarray as rxr
@@ -20,33 +26,74 @@ import socket
 import shutil
 import requests
 from ee import EEException
-from requests.exceptions import ConnectionError
+from requests.exceptions import ConnectionError, Timeout
 from googleapiclient.errors import HttpError
 import zipfile
+import random
+import ssl
 
 from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaIoBaseDownload
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from dask.distributed import Client, LocalCluster #multiprocesamiento
 
-from config import txt_time_dir, token_file, credentials_file, pacific_polygon, atlantic_polygon, EARTHENGINE_TOKEN, log_file, datasets_dir, app_dir #rutas
+from config import txt_time_dir, token_file, credentials_file, pacific_polygon, atlantic_polygon, log_file, datasets_dir, app_dir #rutas
 from config import variables # vars meteorologicas desde WN
 from config import project_name #google cloud project
 from config import SCOPES, timezone #otros
+
+RETRYABLE_HTTP_STATUS = {500, 502, 503, 504}
+RETRYABLE_EXCEPTIONS = (
+    socket.gaierror,          # fallo DNS / resolución de nombre
+    socket.timeout,           # timeout de socket
+    TimeoutError,             # timeout genérico
+    ConnectionResetError,     # conexión reiniciada
+    BrokenPipeError,
+    ssl.SSLError,
+    ConnectionError,
+    Timeout,
+)
 
 # Excepciones específicas #########################################################################
 class IncompleteBlockError(Exception):
     """No hay 250 imágenes en el bloque aún."""
     pass
+class RetryExhaustedError(Exception):
+    """Se agotaron los reintentos de una operación reintentable."""
+    pass
 
+# TEMPORAL #######################################################################################
+def simulate_network_failure(mode):
+    if mode == "dns":
+        raise socket.gaierror("Simulación DNS")
+    elif mode == "conn":
+        raise requests.exceptions.ConnectionError("Simulación ConnectionError")
+    elif mode == "timeout":
+        raise requests.exceptions.Timeout("Simulación Timeout")
+    elif mode == "ee":
+        raise EEException("Simulated internal error 500")
+
+class FakeResponse:
+    def __init__(self, status, reason="Simulated Error"):
+        self.status = status
+        self.reason = reason
+def simulate_http_error(code=500, reason="Internal Server Error", error_reason="internalError"):
+    content = f"""
+    {{
+        "error": {{
+            "code": {code},
+            "message": "{reason}",
+            "errors": [{{"message": "{reason}", "domain": "global", "reason": "{error_reason}"}}]
+        }}
+    }}
+    """.encode("utf-8")
+    raise HttpError(FakeResponse(code, reason), content)
 
 #definición de métodos ##########################|##################################################
 #Autentica con la API de Google Drive usando OAuth2.
 def authenticate_drive():
-    auth_fail_count = 0
     while True: #intentará autentificarse hasta tener éxito
         try: 
             creds = None
@@ -64,14 +111,30 @@ def authenticate_drive():
                     token.write(creds.to_json())
 
             logging.info("Autentificado en Google Drive.")
-            return creds
+            #return creds
+            return build('drive', 'v3', credentials=creds)
         
         # Manejo de excepciones
-        except (HttpError, ConnectionError) as e:
-            auth_fail_count += 1
-            logging.warning(
-                "Falló la autenticación con Google Drive debido a un error de red o servicio externo: %s (%s). "
+        except RETRYABLE_EXCEPTIONS as e:
+            logging.error(
+                "Falló la autenticación con Google Drive debido a un error de red local: %s (%s). "
                 "Verifica tu conexión o si el servicio de Google está accesible. Reintentando en 60s.",
+                str(e), e.__class__.__name__,
+                exc_info=True
+            )
+            time.sleep(60)
+        except HttpError as e:
+            if not is_retryable_http_error(e):
+                logging.critical(
+                    "Falló la autenticación con Google Drive debido a un error fatal del lado de Google: %s (%s). "
+                    "Deteniendo el programa.",
+                    str(e), e.__class__.__name__,
+                    exc_info=True
+                )
+                raise # No se puede continuar con tipo de errores, no es de nuestr lado
+            logging.error(
+                "Falló la autenticación con Google Drive debido a un error reiterable del lado de Google: %s (%s). "
+                "Reintentando en 60s.",
                 str(e), e.__class__.__name__,
                 exc_info=True
             )
@@ -87,11 +150,11 @@ def authenticate_drive():
         except Exception as e:
             logging.error(
                 "Ocurrió una excepción inesperada en authenticate_drive(): %s (%s). "
-                "Revisar stack trace para más detalles. Reintentando en 10s.",
+                "Revisar stack trace para más detalles. Reintentando en 60s.",
                 str(e), e.__class__.__name__,
                 exc_info=True
             )
-            time.sleep(10)
+            time.sleep(60)
 
 def initialize_GEE():
     while True:
@@ -99,14 +162,92 @@ def initialize_GEE():
             ee.Initialize(project=project_name)
             logging.info(f"EarthEngine inicializado para el proyecto: {project_name}")
             break
-        except socket.gaierror as e:
-            logging.error("Sin conexión a Internet al inicializar EE: %s (%s). Reintentando en 60s.", e, e.__class__.__name__, exc_info=True)
+        except RETRYABLE_EXCEPTIONS as e:
+            logging.error("Error de red local al inicializar EE: %s (%s). Reintentando en 60s.", e, e.__class__.__name__, exc_info=True)
         except EEException as e:
             logging.error("Error de Earth Engine al inicializar (%s): %s. Reintentando en 60s.", e.__class__.__name__, str(e), exc_info=True)
         except Exception as e:
             logging.error("Excepción inesperada durante EE.Initialize: %s (%s). Reintentando en 60s.", str(e), e.__class__.__name__, exc_info=True)
         # Esperar 1 min antes de reintentar la inicialización
         time.sleep(60)
+
+def wait_for_stable_connection(test_url="https://www.google.com", checks_required=3, sleep_secs=20, timeout=10):
+    consecutive_ok = 0
+    while True:
+        try:
+            response = requests.get(test_url, timeout=timeout)
+            if response.status_code == 200:
+                consecutive_ok += 1
+                logging.debug(
+                    "Chequeo de conexión OK (%d/%d).",
+                    consecutive_ok, checks_required
+                )
+                if consecutive_ok >= checks_required:
+                    logging.info("Conexión estable recuperada.")
+                    return
+            else:
+                consecutive_ok = 0
+                logging.debug("Chequeo de conexión devolvió status %s.", response.status_code)
+
+        except Exception as e:
+            consecutive_ok = 0
+            logging.warning(
+                "Sin conexión estable todavía: %s (%s).",
+                str(e), e.__class__.__name__
+            )
+        time.sleep(sleep_secs)
+
+# repite un proceso si encuntra un error que no está en nuestras manos (como el error 500)
+def is_retryable_http_error(e):
+    status = getattr(getattr(e, "resp", None), "status", None)
+    return status in RETRYABLE_HTTP_STATUS
+
+
+def execute_with_retry(request_factory, *,
+                       max_retries=10,
+                       base_delay=5,
+                       max_delay=300,
+                       op_name="operación Drive"):
+    """
+    request_factory: función sin argumentos que devuelve el request de Google API.
+    """
+    last_exc = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            request = request_factory()
+            return request.execute()
+
+        except HttpError as e:
+            last_exc = e
+            if not is_retryable_http_error(e):
+                raise  # 4xx y otros no reintentables
+            delay = min(max_delay, base_delay * (2 ** (attempt - 1))) + random.uniform(0, 1)
+            logging.debug(
+                "%s falló con HttpError reintentable (%s). Intento %d/%d. "
+                "Reintentando en %.1fs.",
+                op_name, getattr(e.resp, "status", "sin_status"),
+                attempt, max_retries, delay,
+                exc_info=True
+            )
+            time.sleep(delay)
+
+        except RETRYABLE_EXCEPTIONS as e:
+            last_exc = e
+            delay = min(max_delay, base_delay * (2 ** (attempt - 1))) + random.uniform(0, 1)
+            logging.debug(
+                "%s falló por red local/transporte (%s). Intento %d/%d. "
+                "Reintentando en %.1fs.",
+                op_name, e.__class__.__name__,
+                attempt, max_retries, delay,
+                exc_info=True
+            )
+            time.sleep(delay)
+
+    raise RetryExhaustedError(
+        f"Se agotaron los {max_retries} reintentos en {op_name}: "
+        f"{last_exc.__class__.__name__}: {last_exc}"
+    )
 
 def find_folder_ids(service, names):
     """
@@ -119,7 +260,14 @@ def find_folder_ids(service, names):
             f"mimeType='application/vnd.google-apps.folder' and "
             f"name = '{safe_name}' and trashed = false"
         )
-        resp = service.files().list(q=q, spaces='drive', fields='files(id,name)').execute()
+        resp = execute_with_retry(
+            lambda: service.files().list(
+                q=q,
+                spaces='drive',
+                fields='files(id,name)'
+            ),
+            op_name=f"buscar carpeta '{name}'"
+        )
         files = resp.get('files', [])
         if not files:
             logging.debug(f"No se encontró ninguna carpeta llamada '{name}'")
@@ -131,15 +279,52 @@ def find_folder_ids(service, names):
             
     return ids
 
-def download_file(service, file_id, file_name, save_path):
-    request = service.files().get_media(fileId=file_id)
-    fh = io.FileIO(os.path.join(save_path, file_name), 'wb')
-    downloader = MediaIoBaseDownload(fh, request)
-    done = False
-    while not done:
-        status, done = downloader.next_chunk()
-        logging.debug(f"    → {file_name}: {int(status.progress() * 100)}%")
-    fh.close()
+def download_file_with_retry(service, file_id, file_name, save_path, max_retries=8, base_delay=5, max_delay=300):
+    target = os.path.join(save_path, file_name)
+    last_exc = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            request = service.files().get_media(fileId=file_id)
+            with io.FileIO(target, 'wb') as fh:
+                downloader = MediaIoBaseDownload(fh, request)
+                done = False
+                while not done:
+                    try:
+                        status, done = downloader.next_chunk()
+                        if status is not None:
+                            logging.debug("    → %s: %d%%", file_name, int(status.progress() * 100))
+                    except HttpError as e:
+                        if is_retryable_http_error(e):
+                            raise
+                        raise
+            return
+        except HttpError as e:
+            last_exc = e
+            if not is_retryable_http_error(e):
+                raise
+        except RETRYABLE_EXCEPTIONS as e:
+            last_exc = e
+
+        # si llegó aquí, es reintentable
+        if os.path.exists(target):
+            try:
+                os.remove(target)
+            except OSError:
+                pass
+        delay = min(max_delay, base_delay * (2 ** (attempt - 1))) + random.uniform(0, 1)
+        logging.warning(
+            "Descarga '%s' falló (%s). Intento %d/%d. Reintentando en %.1fs.",
+            file_name, last_exc.__class__.__name__,
+            attempt, max_retries, delay,
+            exc_info=True
+        )
+        time.sleep(delay)
+
+    raise RetryExhaustedError(
+        f"Se agotaron los reintentos descargando '{file_name}': "
+        f"{last_exc.__class__.__name__}: {last_exc}"
+    )
 
 def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service):
     # Revisa si las carpetas ya existen en el drive
@@ -159,16 +344,27 @@ def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service):
 
             # lista archivos dentro de la carpeta
             q = f"'{fid}' in parents and trashed=false"
-            resp = service.files().list(q=q, spaces='drive',
-                                        fields='files(id,name)').execute()
+            resp = execute_with_retry(
+                lambda: service.files().list(
+                    q=q,
+                    spaces='drive',
+                    fields='files(id,name)'
+                ),
+                op_name=f"listar archivos en carpeta '{name}'"
+            )
             files = resp.get('files', [])
 
             if files:
                 f = files[0]
                 logging.info(f"Archivo detectado en '{name}': {f['name']}. Descargando...")
-                download_file(service, f['id'], f['name'], aux_dir)
-                # opcional: borrar el archivo remoto
-                service.files().delete(fileId=f['id']).execute()
+                #download_file(service, f['id'], f['name'], aux_dir)
+                download_file_with_retry(service, f['id'], f['name'], aux_dir)
+                # borrar el archivo remoto
+                #service.files().delete(fileId=f['id']).execute()
+                execute_with_retry(
+                    lambda: service.files().delete(fileId=f['id']),
+                    op_name=f"borrar archivo remoto '{f['name']}'"
+                )
                 downloaded.add(name)
 
         if len(downloaded) < len(folder_ids):
@@ -264,18 +460,18 @@ def get_surface_elevation(now_mexico, region_roi, zona, task_names, FOLDER_NAMES
         task_names.append(file_name + ".tif")  # Agregar el nombre del archivo a la lista
         logging.info(f"Tarea enviada a Google Drive con nombre: '{file_name}'")
         return task_names, FOLDER_NAMES
-    
+
     except EEException as e:
-        logging.error(
-            "Error de Earth Engine al intentar exportar imagen a Drive: %s (%s). "
-            "Revisar parámetros de exportación o cuotas de uso.",
-            str(e), e.__class__.__name__,
-            exc_info=True
-        )
-        raise 
+        raise
+    except RETRYABLE_EXCEPTIONS as e:
+        raise
+    except IncompleteBlockError:
+        raise
+    except HttpError as e:
+        raise
     except Exception as e:
         logging.error(
-            "Error inesperado en get_surface_elevation(): %s (%s)",
+            "Error inesperado en export_forecast_block_to_drive(): %s (%s)",
             str(e), e.__class__.__name__,
             exc_info=True
         )
@@ -347,14 +543,12 @@ def export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES):
         #regresa la lista de archivos a descargar del folfer de google drive
         return task_names, FOLDER_NAMES
     except EEException as e:
-        logging.error(
-            "Error de Earth Engine al intentar exportar imagen a Drive: %s (%s). "
-            "Revisar parámetros de exportación o cuotas de uso.",
-            str(e), e.__class__.__name__,
-            exc_info=True
-        )
+        raise
+    except RETRYABLE_EXCEPTIONS as e:
         raise
     except IncompleteBlockError:
+        raise
+    except HttpError as e:
         raise
     except Exception as e:
         logging.error(
@@ -395,7 +589,12 @@ def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
     )
 
     # Iniciar Dask con paralelización en 10 hilos
-    cluster = LocalCluster(n_workers=10, threads_per_worker=1, dashboard_address=None)
+    cluster = LocalCluster(
+        n_workers=4,
+        threads_per_worker=8,
+        memory_limit="auto",
+        dashboard_address=":9999"
+    )
     client = Client(cluster)
 
     # Para cada variable guardaremos una lista de DataArrays (cada DataArray = un forecast en 2D lat×lon)
@@ -554,11 +753,15 @@ def vaciar_drive(service):
     pattern = re.compile(r"^EarthEngineForecasts_\d{8}_\d{2}_")
     try:
         # Obtener todas las carpetas cuyo nombre contiene "EarthEngineForecasts_"
-        response = service.files().list(
-            q="mimeType='application/vnd.google-apps.folder' and name contains 'EarthEngineForecasts_' and trashed = false",
-            spaces='drive',
-            fields="files(id, name)"
-        ).execute()
+        q="mimeType='application/vnd.google-apps.folder' and name contains 'EarthEngineForecasts_' and trashed = false"
+        response = execute_with_retry(
+            lambda: service.files().list(
+                q=q,
+                spaces='drive',
+                fields='files(id,name)'
+            ),
+            op_name=f"listar carpetas con nombre tipo 'EarthEngineForecasts_' para eliminación"
+        )
 
         folders = response.get('files', [])
         if not folders:
@@ -570,7 +773,11 @@ def vaciar_drive(service):
 
                 if pattern.match(name):
                     try:
-                        service.files().delete(fileId=fid).execute()
+                        #service.files().delete(fileId=fid).execute()
+                        execute_with_retry(
+                            lambda: service.files().delete(fileId=fid),
+                            op_name=f"borrar archivo remoto '{name}'"
+                        )
                         logging.info(f"Carpeta eliminada: '{name}' (ID: {fid})")
                     except HttpError as e:
                         logging.error(
@@ -584,7 +791,13 @@ def vaciar_drive(service):
                     logging.debug(f"Carpeta ignorada (no coincide con el patrón): '{name}'")
     except HttpError as e:
         logging.error(
-            "Error al listar carpetas de Google Drive para eliminación: %s (%s)",
+            "Error HTTP al listar carpetas de Google Drive para eliminación: %s (%s)",
+            str(e), e.__class__.__name__,
+            exc_info=True
+        )      
+    except Exception as e:
+        logging.error(
+            "Error inesperado al listar carpetas de Google Drive para eliminación: %s (%s).",
             str(e), e.__class__.__name__,
             exc_info=True
         )
@@ -594,19 +807,27 @@ def vaciar_drive(service):
     try:
         while True:
             # Listar archivos en la papelera
-            response = service.files().list(
-                q="trashed = true",
-                spaces='drive',
-                fields="nextPageToken, files(id, name)"
-            ).execute()
+            q="trashed = true"
+            response = execute_with_retry(
+                lambda: service.files().list(
+                    q=q,
+                    spaces='drive',
+                    fields="nextPageToken, files(id, name)"
+                ),
+                op_name=f"listar archivos en la papelera"
+            )
 
             files = response.get('files', [])
             if not files:
                 break
             for file in files:
                 try:
-                    service.files().delete(fileId=file['id']).execute()
-                except HttpError as e:
+                    #service.files().delete(fileId=file['id']).execute()
+                    execute_with_retry(
+                        lambda: service.files().delete(fileId=file['id']),
+                        op_name=f"borrar archivo remoto '{file['name']}'"
+                    )
+                except (HttpError, RetryExhaustedError) as e:
                     logging.warning(
                         "No se pudo eliminar el archivo '%s' (ID: %s) de la papelera: %s (%s). "
                         "Puede deberse a un problema de permisos, red, o que ya fue eliminado.",
@@ -618,9 +839,15 @@ def vaciar_drive(service):
                 break
     except HttpError as error:
         logging.error(
-            "Error al intentar listar o procesar archivos en la papelera de Google Drive: %s (%s). "
+            "Error HTTP al intentar listar o procesar archivos en la papelera de Google Drive: %s (%s). "
             "No se pudieron recuperar o eliminar elementos. Revisar la conexión o permisos.",
             str(error), error.__class__.__name__,
+            exc_info=True
+        )
+    except Exception as e:
+        logging.error(
+            "Error inesperado al intentar listar o procesar archivos en la papelera de Google Drive: %s (%s).",
+            str(e), e.__class__.__name__,
             exc_info=True
         )
 
@@ -724,25 +951,22 @@ def main():
     #os.environ['EARTHENGINE_TOKEN'] = EARTHENGINE_TOKEN
     initialize_GEE()
     # #autentificar en google drive
-    creds = authenticate_drive()
-    service = build('drive', 'v3', credentials=creds)
+    service = authenticate_drive()
 
-    #finish_download = 0 # Contador de descargas finalizadas
     horarios_permitidos = {0, 6, 12, 18}
-    #while finish_download < 2:
     last_hour = None
     while True:
-        # Obtener la hora actual en la zona horaria de México
-        now_mexico = datetime.now(standar_time_zone)
-        ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
-        now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0)
-        #now_mexico = now_mexico.replace(hour=6, minute=0, second=0, microsecond=0)
-        # crear el nombre de archivo si está dentro del horario permitido
-        fecha_string = now_mexico.strftime('%Y%m%d_%H')
-
         # Busca los archivos de cada zona
         zonas = ['pacifico', 'atlantico']
         for zona in zonas:
+            # Obtener la hora actual en la zona horaria de México
+            now_mexico = datetime.now(standar_time_zone)
+            ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
+            now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0) #el bueno
+            #now_mexico = now_mexico.replace(day=14, hour=0, minute=0, second=0, microsecond=0)
+            # crear el nombre de archivo si está dentro del horario permitido
+            fecha_string = now_mexico.strftime('%Y%m%d_%H')
+
             # Definir directorios dependiendo de la zona
             aux_dir = f'{app_dir}auxiliary_files_{zona}/'
             output_dir = f'{datasets_dir}{zona}/'
@@ -751,8 +975,12 @@ def main():
             os.makedirs(os.path.dirname(aux_dir), exist_ok=True)
             os.makedirs(os.path.dirname(output_dir), exist_ok=True)
 
-            # si el archivo más reciente no existe, busca que esté disponible para descargar
-            if not os.path.exists(output_file):
+            # si el archivo más reciente ya existe, no es necesario descargarlo
+            if os.path.exists(output_file):
+                logging.debug(f"El archivo {output_file} ya existe, no es necesario descargar.")
+                continue
+
+            while True: #reintentar indefinidamente cada zona hasta que se descargue correctamente
                 try:
                     # Define el polígono
                     if zona == 'pacifico':
@@ -789,39 +1017,75 @@ def main():
 
                     #finish_download += 1
                     logging.info(f"Descarga de {output_file} finalizada.")
+                    break
 
                 except IncompleteBlockError:
                     logging.debug(
-                        "Bloque incompleto: No son 250 imágenes."
+                        "Bloque incompleto: No son 250 imágenes. Reintentando en 60s."
                     )
-                except Exception as e:
+                except RetryExhaustedError as e:
                     logging.error(
-                        "Error inesperado: %s (%s)",
+                        "Fallo transitorio detectado en zona '%s': %s. Revisando conexión",
+                        zona, str(e), exc_info=True
+                    )
+                    wait_for_stable_connection()
+                except RETRYABLE_EXCEPTIONS as e:
+                    logging.error(
+                        "Error debido a un error de red local: %s (%s). "
+                        "Verifica tu conexión. Reintentando en 60s.",
                         str(e), e.__class__.__name__,
                         exc_info=True
                     )
-                    #finish_download = 0
-            else:
-                logging.debug(f"El archivo {output_file} ya existe, no es necesario descargar.")
-                #finish_download += 1
-
-        # Esperar 60 segundos antes de revisar nuevamente
-        time.sleep(60)
+                except EEException as e:
+                    logging.error(
+                        "Error de Earth Engine: %s (%s). "
+                        "Revisar parámetros de exportación o cuotas de uso. Reintentando en 60s.",
+                        str(e), e.__class__.__name__,
+                        exc_info=True
+                    )
+                except HttpError as e:
+                    if not is_retryable_http_error(e):
+                        logging.critical(
+                            "Error fatal del lado de Google: %s (%s). "
+                            "Deteniendo el programa.",
+                            str(e), e.__class__.__name__,
+                            exc_info=True
+                        )
+                        raise # No se puede continuar con tipo de errores, no es de nuestr lado
+                    else:
+                        logging.error(
+                            "Error HTTP transitorio: %s (%s). "
+                            "Reintentando en 60s.",
+                            str(e), e.__class__.__name__,
+                            exc_info=True
+                        )
+                except Exception as e:
+                    logging.error(
+                        "Error inesperado: %s (%s). Reintentando en 60s.",
+                        str(e), e.__class__.__name__,
+                        exc_info=True
+                    )
+                time.sleep(60) #espera para las excepciones
 
         #cada vez que el minuto actual sea 0, intenta descargar los shp_files de probabilidad de ciclones
-        now_mexico = datetime.now(standar_time_zone)
-        output_shp_dir = f"{datasets_dir}NOAA_files"
-        if not os.path.exists(output_shp_dir):
-            os.makedirs(output_shp_dir)
-            os.chmod(output_shp_dir, 0o777)
-        if (now_mexico.minute == 0 and now_mexico.hour != last_hour) or (len(os.listdir(output_shp_dir)) == 0):
-            #descargar el shapefile de zonas de probabilidad de TC
-            url = "https://www.nhc.noaa.gov/xgtwo/gtwo_shapefiles.zip"
-            download_zip(url, output_shp_dir, 'zip')
-            last_hour = now_mexico.hour
+        try:
+            now_mexico = datetime.now(standar_time_zone)
+            output_shp_dir = f"{datasets_dir}NOAA_files"
+            if not os.path.exists(output_shp_dir):
+                os.makedirs(output_shp_dir)
+                os.chmod(output_shp_dir, 0o777)
+            if (now_mexico.minute == 0 and now_mexico.hour != last_hour) or (len(os.listdir(output_shp_dir)) == 0):
+                #descargar el shapefile de zonas de probabilidad de TC
+                url = "https://www.nhc.noaa.gov/xgtwo/gtwo_shapefiles.zip"
+                download_zip(url, output_shp_dir, 'zip')
+                last_hour = now_mexico.hour
+        except Exception as e:
+            logging.error(
+                "Error inesperado en la descarga de NOAA files: %s (%s). Reintentando en 60s.",
+                str(e), e.__class__.__name__,
+                exc_info=True
+            )
 
-
-    #logging.info("Descargas terminadas")
 
 if __name__ == '__main__':
     main() 
