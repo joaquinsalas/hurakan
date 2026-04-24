@@ -33,7 +33,8 @@ def run_ensemble_prediction(features_dict):
         
         if response.status_code == 200:
             data = response.json()
-            
+            print(f"Respuesta del clasificador: {data}")
+
             # Synchronized with server response: 'probability_details' and 'predictions'
             # We extract the probability for class '1' (Active/Hurricane)
             probability = float(data['probability_details'][0]['1'])

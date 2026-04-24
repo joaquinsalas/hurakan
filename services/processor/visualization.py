@@ -3,6 +3,7 @@ import json
 import glob
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import netCDF4
 import folium
 import matplotlib.dates as mdates
@@ -126,15 +127,49 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
     trajs_pacific = collect_trajectories_by_region(common_stitch_dir, timestamp, 'pacifico')
     trajs_atlantic = collect_trajectories_by_region(common_stitch_dir, timestamp, 'atlantico')
     all_trajectories = trajs_pacific + trajs_atlantic
-
-    if not all_trajectories:
-        logger.warning("No trajectories found for combined map.")
-        m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron")
-        m.save(os.path.join(output_dir, f'map_{timestamp}.html'))
-        return True
+    centro_inicial = [23.6, -95]
 
     # 2. Base map setup
-    m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron")
+    m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron", max_bounds=True,
+        min_lat=-90, max_lat=90,
+        min_lon=-180, max_lon=180, min_zoom=3)
+
+    try:
+        # Define la ruta a la carpeta donde guardarás los shapefiles
+        shapefile_dir = os.path.join(os.getcwd(), 'data', 'assets', 'shapefiles')
+
+        # Cargar Pacífico
+        pacifico_shp = os.path.join(shapefile_dir, 'pacifico_shp_grande.shp')  # Asegúrate que el archivo se llame así
+        if os.path.exists(pacifico_shp):
+            gdf_pacifico = gpd.read_file(pacifico_shp)
+            folium.GeoJson(
+                gdf_pacifico,
+                name="Limites Pacífico",
+                style_function=lambda x: {
+                    'color': '#D0D0D0',
+                    'weight': 2,
+                    'opacity': 1.5,
+                    'fill':False
+                }
+            ).add_to(m)
+
+        # Cargar Atlántico
+        atlantico_shp = os.path.join(shapefile_dir, 'atlantico_shp_grande.shp')  # Asegúrate que el archivo se llame así
+        if os.path.exists(atlantico_shp):
+            gdf_atlantico = gpd.read_file(atlantico_shp)
+            folium.GeoJson(
+                gdf_atlantico,
+                name="Limit Atlántico",
+                style_function=lambda x: {
+                    'color': '#D0D0D0',
+                    'weight': 2,
+                    'opacity': 1.5,
+                    'fill': False
+                }
+            ).add_to(m)
+
+    except Exception as e:
+        logger.error(f"Error al cargar las regiones de análisis: {e}", exc_info=True)
 
     # 3. Locate original .nc file for metadata
     nc_file_path = None
@@ -154,33 +189,35 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
 
     # 4. Spaghetti Feature Group
     fg_spaghetti = folium.FeatureGroup(name="All Trajectories (Spaghetti)", show=True)
-    fc_spaghetti = build_segment_featurecollection(all_trajectories)
-    
-    folium.GeoJson(
-        data=fc_spaghetti,
-        style_function=lambda x: {'color': x['properties']['color'], 'weight': 1, 'opacity': 0.6},
-        tooltip=folium.GeoJsonTooltip(
-            fields=['time', 'wind_kmh', 'cat', 'slp_hPa'],
-            aliases=['Date:', 'Wind (km/h):', 'Category:', 'Pressure (hPa):'],
-            style="background-color: #F0EFEF; border: 2px solid black; border-radius: 3px; box-shadow: 3px;"
-        ),
-        highlight_function=lambda x: {'weight': 3, 'opacity': 1.0}
-    ).add_to(fg_spaghetti)
 
-    # Markers for Start and End of each member
-    for trk in all_trajectories:
-        if not trk: continue
-        # Start (Green)
-        start_icon = DivIcon(icon_size=(14,14), icon_anchor=(7,7),
-                             html='<div style="width:10px; height:10px; background-color:green; border-radius:50%; border:2px solid darkgreen;"></div>')
-        folium.Marker(location=[trk[0][1], trk[0][0]], icon=start_icon,
-                      popup=f"<b>Start:</b><br>{trk[0][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
-        # End (Grey)
-        if len(trk) > 1:
-            end_icon = DivIcon(icon_size=(14,14), icon_anchor=(7,7),
-                               html='<div style="width:10px; height:10px; background-color:grey; border-radius:50%; border:2px solid black;"></div>')
-            folium.Marker(location=[trk[-1][1], trk[-1][0]], icon=end_icon,
-                          popup=f"<b>End:</b><br>{trk[-1][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
+    if all_trajectories:
+        fc_spaghetti = build_segment_featurecollection(all_trajectories)
+
+        folium.GeoJson(
+            data=fc_spaghetti,
+            style_function=lambda x: {'color': x['properties']['color'], 'weight': 1, 'opacity': 0.6},
+            tooltip=folium.GeoJsonTooltip(
+                fields=['time', 'wind_kmh', 'cat', 'slp_hPa'],
+                aliases=['Date:', 'Wind (km/h):', 'Category:', 'Pressure (hPa):'],
+                style="background-color: #F0EFEF; border: 2px solid black; border-radius: 3px; box-shadow: 3px;"
+            ),
+            highlight_function=lambda x: {'weight': 3, 'opacity': 1.0}
+        ).add_to(fg_spaghetti)
+
+        # Markers for Start and End of each member
+        for trk in all_trajectories:
+            if not trk: continue
+            # Start (Green)
+            start_icon = DivIcon(icon_size=(14, 14), icon_anchor=(7, 7),
+                                 html='<div style="width:10px; height:10px; background-color:green; border-radius:50%; border:2px solid darkgreen;"></div>')
+            folium.Marker(location=[trk[0][1], trk[0][0]], icon=start_icon,
+                          popup=f"<b>Start:</b><br>{trk[0][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
+            # End (Grey)
+            if len(trk) > 1:
+                end_icon = DivIcon(icon_size=(14, 14), icon_anchor=(7, 7),
+                                   html='<div style="width:10px; height:10px; background-color:grey; border-radius:50%; border:2px solid black;"></div>')
+                folium.Marker(location=[trk[-1][1], trk[-1][0]], icon=end_icon,
+                              popup=f"<b>End:</b><br>{trk[-1][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
 
     fg_spaghetti.add_to(m)
     spaghetti_jsvar = fg_spaghetti.get_name()
@@ -393,6 +430,27 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
     </script>
     """
     m.get_root().html.add_child(Element(timeline_control_html))
+
+    center_btn_html = f"""
+            <div style="position: fixed; top: 80px; left: 10px; z-index: 9999; background-color: white; border: 2px solid rgba(0,0,0,0.2); border-radius: 4px; box-shadow: 0 1px 5px rgba(0,0,0,0.65);">
+                <a href="#" onclick="recenterMap(); return false;" title="Centrar al origen de la tormenta" style="display: block; width: 30px; height: 30px; line-height: 30px; text-align: center; text-decoration: none; color: black; font-size: 22px; font-weight: bold;">
+                    ⌖
+                </a>
+            </div>
+            <script>
+                function recenterMap() {{
+                    var map = window["{m.get_name()}"];
+                    if (map) {{
+                        // Mueve la cámara suavemente a las coordenadas iniciales con zoom 5
+                        map.flyTo([{centro_inicial[0]}, {centro_inicial[1]}], 5, {{
+                            animate: true,
+                            duration: 1.0
+                        }});
+                    }}
+                }}
+            </script>
+        """
+    m.get_root().html.add_child(Element(center_btn_html))
 
     combined_map_path = os.path.join(output_dir, f'map_{timestamp}.html')
     m.save(combined_map_path)

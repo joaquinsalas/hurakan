@@ -1,4 +1,4 @@
-lead_time_hours,min_trajectories_per_cluster,link_dist_threshold_km
+horas_diff_estimadas,umbral_min_trayectorias_por_cluster,umbral_distancia_enlace_km
 -336.0,5.0,200.0
 -324.0,5.0,400.0
 -312.0,5.0,400.0

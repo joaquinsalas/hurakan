@@ -60,6 +60,7 @@ def export_map_image(map_html_path, output_dir, timestamp):
     try:
         # Initialize tool specifying the output folder
         hti = Html2Image(output_path=output_dir)
+        hti.browser.flags = ['--disable-features=DBus', '--no-sandbox', '--disable-gpu']
         image_name = f'static_map_{timestamp}.png'
 
         # Define the virtual screen size for the screenshot

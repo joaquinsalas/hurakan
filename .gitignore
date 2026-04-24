@@ -12,7 +12,7 @@ env/
 
 # ---------- Environment and local secrets ----------
 .env
-.env.*
+.env
 !.env.example
 
 # ---------- Tooling caches ----------
