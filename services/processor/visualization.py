@@ -129,12 +129,6 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
     all_trajectories = trajs_pacific + trajs_atlantic
     centro_inicial = [23.6, -95]
 
-    if not all_trajectories:
-        logger.warning("No trajectories found for combined map.")
-        m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron", no_wrap=True, min_zoom=3)
-        m.save(os.path.join(output_dir, f'map_{timestamp}.html'))
-        return True
-
     # 2. Base map setup
     m = folium.Map(location=[23.6, -95], zoom_start=4, tiles="CartoDB positron", max_bounds=True,
         min_lat=-90, max_lat=90,
@@ -195,33 +189,35 @@ def generate_combined_map(timestamp, common_stitch_dir, output_dir):
 
     # 4. Spaghetti Feature Group
     fg_spaghetti = folium.FeatureGroup(name="All Trajectories (Spaghetti)", show=True)
-    fc_spaghetti = build_segment_featurecollection(all_trajectories)
-    
-    folium.GeoJson(
-        data=fc_spaghetti,
-        style_function=lambda x: {'color': x['properties']['color'], 'weight': 1, 'opacity': 0.6},
-        tooltip=folium.GeoJsonTooltip(
-            fields=['time', 'wind_kmh', 'cat', 'slp_hPa'],
-            aliases=['Date:', 'Wind (km/h):', 'Category:', 'Pressure (hPa):'],
-            style="background-color: #F0EFEF; border: 2px solid black; border-radius: 3px; box-shadow: 3px;"
-        ),
-        highlight_function=lambda x: {'weight': 3, 'opacity': 1.0}
-    ).add_to(fg_spaghetti)
 
-    # Markers for Start and End of each member
-    for trk in all_trajectories:
-        if not trk: continue
-        # Start (Green)
-        start_icon = DivIcon(icon_size=(14,14), icon_anchor=(7,7),
-                             html='<div style="width:10px; height:10px; background-color:green; border-radius:50%; border:2px solid darkgreen;"></div>')
-        folium.Marker(location=[trk[0][1], trk[0][0]], icon=start_icon,
-                      popup=f"<b>Start:</b><br>{trk[0][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
-        # End (Grey)
-        if len(trk) > 1:
-            end_icon = DivIcon(icon_size=(14,14), icon_anchor=(7,7),
-                               html='<div style="width:10px; height:10px; background-color:grey; border-radius:50%; border:2px solid black;"></div>')
-            folium.Marker(location=[trk[-1][1], trk[-1][0]], icon=end_icon,
-                          popup=f"<b>End:</b><br>{trk[-1][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
+    if all_trajectories:
+        fc_spaghetti = build_segment_featurecollection(all_trajectories)
+
+        folium.GeoJson(
+            data=fc_spaghetti,
+            style_function=lambda x: {'color': x['properties']['color'], 'weight': 1, 'opacity': 0.6},
+            tooltip=folium.GeoJsonTooltip(
+                fields=['time', 'wind_kmh', 'cat', 'slp_hPa'],
+                aliases=['Date:', 'Wind (km/h):', 'Category:', 'Pressure (hPa):'],
+                style="background-color: #F0EFEF; border: 2px solid black; border-radius: 3px; box-shadow: 3px;"
+            ),
+            highlight_function=lambda x: {'weight': 3, 'opacity': 1.0}
+        ).add_to(fg_spaghetti)
+
+        # Markers for Start and End of each member
+        for trk in all_trajectories:
+            if not trk: continue
+            # Start (Green)
+            start_icon = DivIcon(icon_size=(14, 14), icon_anchor=(7, 7),
+                                 html='<div style="width:10px; height:10px; background-color:green; border-radius:50%; border:2px solid darkgreen;"></div>')
+            folium.Marker(location=[trk[0][1], trk[0][0]], icon=start_icon,
+                          popup=f"<b>Start:</b><br>{trk[0][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
+            # End (Grey)
+            if len(trk) > 1:
+                end_icon = DivIcon(icon_size=(14, 14), icon_anchor=(7, 7),
+                                   html='<div style="width:10px; height:10px; background-color:grey; border-radius:50%; border:2px solid black;"></div>')
+                folium.Marker(location=[trk[-1][1], trk[-1][0]], icon=end_icon,
+                              popup=f"<b>End:</b><br>{trk[-1][2].strftime('%d-%b %H:%M')}").add_to(fg_spaghetti)
 
     fg_spaghetti.add_to(m)
     spaghetti_jsvar = fg_spaghetti.get_name()
