@@ -6,7 +6,9 @@ def create_user(username, password):
     app = create_app()
 
     with app.app_context():
-        # Check if user already exists
+        # Ensure database tables exist before querying or creating a user.
+        db.create_all()
+
         if User.query.filter_by(username=username).first():
             print(f"User '{username}' already exists")
             return

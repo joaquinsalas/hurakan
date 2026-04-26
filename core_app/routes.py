@@ -17,7 +17,16 @@ load_dotenv()
 MAINTENANCE_MODE = False
 
 # --- Logging Configuration ---
-LOG_FILE_PATH = os.getenv('APP_LOG_FILE', 'app_activity.log')
+LOG_FILE_PATH = os.getenv('APP_LOG_FILE', 'data/logs/app_activity.log')
+
+# Resolve relative paths against the repository root, not the current working directory.
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+if not os.path.isabs(LOG_FILE_PATH):
+    LOG_FILE_PATH = os.path.abspath(os.path.join(repo_root, LOG_FILE_PATH))
+
+# Ensure the log directory exists
+log_dir = os.path.dirname(LOG_FILE_PATH)
+os.makedirs(log_dir, exist_ok=True)
 
 logging.basicConfig(
     level=logging.INFO,

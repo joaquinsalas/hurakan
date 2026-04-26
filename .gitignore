@@ -9,6 +9,7 @@ hurakan_env/
 .venv/
 venv/
 env/
+download_env/
 
 # ---------- Environment and local secrets ----------
 .env

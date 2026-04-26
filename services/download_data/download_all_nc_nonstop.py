@@ -31,6 +31,9 @@ from googleapiclient.errors import HttpError
 import zipfile
 import random
 import ssl
+import errno
+from pathlib import Path
+import json
 
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
@@ -41,7 +44,7 @@ from dask.distributed import Client, LocalCluster #multiprocesamiento
 
 from config import txt_time_dir, token_file, credentials_file, pacific_polygon, atlantic_polygon, log_file, datasets_dir, app_dir #rutas
 from config import variables # vars meteorologicas desde WN
-from config import project_name #google cloud project
+from config import project_name, credentials_path #google cloud project
 from config import SCOPES, timezone #otros
 
 RETRYABLE_HTTP_STATUS = {500, 502, 503, 504}
@@ -55,6 +58,14 @@ RETRYABLE_EXCEPTIONS = (
     ConnectionError,
     Timeout,
 )
+RETRYABLE_OS_ERRNOS = {
+    errno.ENETUNREACH,   # 101 Network is unreachable
+    errno.EHOSTUNREACH,  # 113 No route to host
+    errno.ETIMEDOUT,     # 110 Connection timed out
+    errno.ECONNRESET,    # 104 Connection reset by peer
+    errno.EPIPE,         # 32 Broken pipe
+    errno.ENETDOWN,      # 100 Network is down
+}
 
 # Excepciones específicas #########################################################################
 class IncompleteBlockError(Exception):
@@ -62,6 +73,9 @@ class IncompleteBlockError(Exception):
     pass
 class RetryExhaustedError(Exception):
     """Se agotaron los reintentos de una operación reintentable."""
+    pass
+class TimeoutDrive(Exception):
+    """No se encontraron las carpetas en Drive después de 3 horas, posible cancelación de tarea o eliminación de carpeta en Drive. Reiniciando secuencia de descarga."""
     pass
 
 # TEMPORAL #######################################################################################
@@ -104,7 +118,7 @@ def authenticate_drive():
                     creds.refresh(Request())
                 else:
                     flow = InstalledAppFlow.from_client_secrets_file(credentials_file, SCOPES)
-                    creds = flow.run_local_server(port=0)
+                    creds = flow.run_local_server(port=0, open_browser=False)
 
                 #guarda el token para futuras ejecuciones
                 with open(token_file, 'w') as token: 
@@ -123,6 +137,14 @@ def authenticate_drive():
                 exc_info=True
             )
             time.sleep(60)
+        except OSError as e:
+            if is_retryable_os_error(e):
+                logging.error("Error de red local en authenticate_drive() (errno=%s): %s (%s). Reintentando en 60s.", getattr(e, "errno", None), str(e), e.__class__.__name__, exc_info=True)
+                time.sleep(60)
+            else:
+                logging.critical(msg, exc_info=True)
+                print("ERROR FATAL:", msg)
+                raise # No tiene sentido reintentar si hay otro error q
         except HttpError as e:
             if not is_retryable_http_error(e):
                 logging.critical(
@@ -159,11 +181,26 @@ def authenticate_drive():
 def initialize_GEE():
     while True:
         try: 
-            ee.Initialize(project=project_name)
+            # Load credentials from the file
+            with open(credentials_path, 'r') as f:
+                creds_dict = json.load(f)
+            # Create credentials and refresh
+            credentials = Credentials.from_authorized_user_info(
+                creds_dict, 
+                scopes=['https://www.googleapis.com/auth/earthengine']
+            )
+            credentials.refresh(Request())
+            ee.Initialize(credentials=credentials, project=project_name)
+            #ee.Initialize(project=project_name)
             logging.info(f"EarthEngine inicializado para el proyecto: {project_name}")
             break
         except RETRYABLE_EXCEPTIONS as e:
             logging.error("Error de red local al inicializar EE: %s (%s). Reintentando en 60s.", e, e.__class__.__name__, exc_info=True)
+        except OSError as e:
+            if is_retryable_os_error(e):
+                logging.error("Error de red local al inicializar EE (errno=%s): %s (%s). Reintentando en 60s.", getattr(e, "errno", None), str(e), e.__class__.__name__, exc_info=True)
+            else:
+                raise
         except EEException as e:
             logging.error("Error de Earth Engine al inicializar (%s): %s. Reintentando en 60s.", e.__class__.__name__, str(e), exc_info=True)
         except Exception as e:
@@ -202,6 +239,8 @@ def is_retryable_http_error(e):
     status = getattr(getattr(e, "resp", None), "status", None)
     return status in RETRYABLE_HTTP_STATUS
 
+def is_retryable_os_error(e):
+    return isinstance(e, OSError) and getattr(e, "errno", None) in RETRYABLE_OS_ERRNOS
 
 def execute_with_retry(request_factory, *,
                        max_retries=10,
@@ -239,6 +278,20 @@ def execute_with_retry(request_factory, *,
                 "%s falló por red local/transporte (%s). Intento %d/%d. "
                 "Reintentando en %.1fs.",
                 op_name, e.__class__.__name__,
+                attempt, max_retries, delay,
+                exc_info=True
+            )
+            time.sleep(delay)
+
+        except OSError as e:
+            if not is_retryable_os_error(e):
+                raise
+            last_exc = e
+            delay = min(max_delay, base_delay * (2 ** (attempt - 1))) + random.uniform(0, 1)
+            logging.debug(
+                "%s falló con OSError de red local (errno=%s). Intento %d/%d. "
+                "Reintentando en %.1fs.",
+                op_name, getattr(e, "errno", None),
                 attempt, max_retries, delay,
                 exc_info=True
             )
@@ -326,10 +379,13 @@ def download_file_with_retry(service, file_id, file_name, save_path, max_retries
         f"{last_exc.__class__.__name__}: {last_exc}"
     )
 
-def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service):
+def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service, inicio):
     # Revisa si las carpetas ya existen en el drive
     folder_ids = {}
     while len(folder_ids) != len(FOLDER_NAMES):
+        # si lleva más de 3 horas sin encontrar las carpetas, manda una excepción para reiniciar la descarga
+        if time.time() - inicio > (3*3600):
+            raise TimeoutDrive()
         folder_ids = find_folder_ids(service, FOLDER_NAMES)
         time.sleep(20)
 
@@ -371,7 +427,7 @@ def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service):
             logging.debug("Esperando 60s a que las task terminen y que los archivos esten disponibles en drive")
             time.sleep(60)
 
-def check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service):
+def check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service, inicio):
     while True:
         # Chequea cuáles archivos aún no existen
         missing = [
@@ -384,7 +440,7 @@ def check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service):
             break
 
         #empieza la secuencia de descarga de archivos desde drive
-        secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service)
+        secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service, inicio)
 
         # Si aún faltan, informamos y esperamos
         logging.debug(f"Faltan archivos: {missing}. Reintentando en 20 s…")
@@ -503,7 +559,7 @@ def export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES):
             logging.debug(f"Exportando bloque {i} desde {forecast_ranges[i][0]}h hasta {forecast_ranges[i][1]}h")
 
             dataset = (
-                ee.ImageCollection("projects/gcp-public-data-weathernext/assets/126478713_1_0")
+                ee.ImageCollection("projects/gcp-public-data-weathernext/assets/weathernext_2_0_0")
                 .filter(ee.Filter.date(init_date_utc))
                 .filter(ee.Filter.gte('forecast_hour', forecast_ranges[i][0]))
                 .filter(ee.Filter.lte('forecast_hour', forecast_ranges[i][1]))
@@ -511,7 +567,8 @@ def export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES):
             )
 
             num_images = dataset.size().getInfo()
-            if num_images != 250: # Cada bloque debe de tener 250 imágenes cada uno para poder continuar
+            #el bloque 0 debe de tener 640 imagenes y los demás 576 para poder continuar
+            if (i == 0 and num_images < 640) or (i > 0 and num_images < 576): 
                 raise IncompleteBlockError()
 
             # Combina todas las imágenes en una sola multibanda
@@ -558,21 +615,14 @@ def export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES):
         )
         raise
 
-def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
-    #ejemplo de una band name "202505070000_202505071200_0_mean_sea_level_pressure"
+def _convert_tif_subset_to_netcdf(tif_files, output_netcdf):
     """
-    Convierte TIFs exportados por Earth Engine a un único NetCDF con estructura específica:
-    time x lat x lon, con variables meteorológicas y elevación opcional.
-    
-    Args:
-        tif_files (list): Lista de archivos .tif por bloques.
-        output_netcdf (str): Ruta al archivo .nc de salida.
+    Convierte un subconjunto de TIFFs a un NetCDF temporal.
+    Basado en tu método original, pero usado para procesar menos bloques a la vez.
     """
-    
     if not tif_files:
         raise ValueError("La lista de archivos .tif está vacía. Nada que convertir.")
-    
-    # declaración de varaibles
+
     var_name_map = {
         'mean_sea_level_pressure': 'mslp',
         '10m_u_component_of_wind': 'u10',
@@ -581,32 +631,29 @@ def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
         '500_geopotential': 'geopotential_500'
     }
     expected_vars = list(var_name_map.values())
-    # Expresión regular para extraer la fecha del forecast y nombre de la vaariable:
+
     band_regex = re.compile(
         r'(\d{12})_(\d{12})_\d+_'
         r'(mean_sea_level_pressure|10m_u_component_of_wind|'
         r'10m_v_component_of_wind|300_geopotential|500_geopotential)'
     )
 
-    # Iniciar Dask con paralelización en 10 hilos
     cluster = LocalCluster(
         n_workers=4,
-        threads_per_worker=8,
-        memory_limit="auto",
+        threads_per_worker=2,
+        memory_limit="6GB",
         dashboard_address=":9999"
     )
     client = Client(cluster)
 
-    # Para cada variable guardaremos una lista de DataArrays (cada DataArray = un forecast en 2D lat×lon)
     data_arrays = {var: [] for var in expected_vars}
-    time_hours = []      # Lista con todos los "forecast_hr" en horas desde 1970
+    time_hours = []
     lat_vals = None
     lon_vals = None
 
-    try: 
-        # Procesar cada TIF (en paralelo, lazy)
+    try:
         for tif_path in tif_files:
-            logging.debug(f"Leyendo {tif_path}")
+            logging.info(f"Leyendo subconjunto TIFF: {tif_path}")
             da = rxr.open_rasterio(
                 tif_path,
                 masked=True,
@@ -614,98 +661,159 @@ def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
             )
             da = da.rename({'band': 'band', 'y': 'lat', 'x': 'lon'})
 
-            # Invertir latitud si está al revés
             if da.lat.values[0] < da.lat.values[-1]:
                 da = da.sel(lat=da.lat[::-1])
 
-            # Extraer el nombre de la variable del archivo TIF
             try:
                 band_names = list(da.descriptions)
             except Exception:
-                # Si no existe da.descriptions, tiramos mano de attrs
                 bm = da.attrs.get("long_name", da.attrs.get("description", None))
                 if isinstance(bm, (list, tuple)):
                     band_names = list(bm)
                 else:
-                    # Si no hay nombres de banda no podemos convertir a nc
                     raise ValueError(
                         f"El tif no tiene nombres de bandas en 'descriptions' ni 'attrs'. Intentar volver a descargar"
                     )
 
-            # Para cada banda dentro de este TIF extrae variable y forecast_hr
-            # Guardar la capa 2D (lat×lon) en data_arrays[var]
             for idx in range(da.sizes["band"]):
                 raw_name = band_names[idx]
                 m = band_regex.search(raw_name)
                 if not m:
-                    # Si no coincide con el patrón, se salta
                     continue
 
-                date_str_12 = m.group(2)   # ej. "202505070000"
-                var_raw    = m.group(3)    # ej. "mean_sea_level_pressure"
-                var_short  = var_name_map[var_raw]
+                date_str_12 = m.group(2)
+                var_raw = m.group(3)
+                var_short = var_name_map[var_raw]
 
-                # Convertimos ese string a datetime y luego a "horas desde 1970"
                 dt = datetime.strptime(date_str_12, "%Y%m%d%H%M")
                 epoch = datetime(1970, 1, 1)
                 delta = dt - epoch
                 forecast_hr = int(delta.total_seconds() // 3600)
 
-                # Obtén lazy chunk de la banda idx (2D: lat×lon)
                 layer_2d = da.isel(band=idx)
-                layer_2d.attrs.clear() # limpia todos los attrs heredados
+                layer_2d.attrs.clear()
 
-                # Guardamos el DataArray (lazy) en la lista correspondiente
                 data_arrays[var_short].append(layer_2d)
 
-                # Solo una vez por cada forecast_hr (la primera variable que se procese para esa hora)
-                # Para no duplicar timestamps en time_hours (todas las variables comparten la misma hora)
-                if var_short == "mslp": 
+                if var_short == "mslp":
                     time_hours.append(forecast_hr)
 
-                # Guardamos coords lat/lon una única vez:
                 if lat_vals is None:
                     lat_vals = da.lat.values
                     lon_vals = da.lon.values
 
-        # Construir el Dataset
         ds = xr.Dataset(
             coords={
                 "time": ("time", np.array(time_hours, dtype=int)),
-                "lat":  ("lat",  lat_vals),
-                "lon":  ("lon",  lon_vals)
+                "lat": ("lat", lat_vals),
+                "lon": ("lon", lon_vals)
             }
         )
         ds["time"].attrs["units"] = "hours since 1970-01-01 00:00:00"
         ds["time"].attrs["calendar"] = "proleptic_gregorian"
 
-        # Para cada variable, stackeamos las listas de DataArray (cada uno lazy) en un solo arreglo (time, lat, lon)
         for var_short in expected_vars:
             if not data_arrays[var_short]:
-                # En caso de que en algún tif no haya aparecido esa variable, saltamos
                 continue
 
-            # Con xarray.concat unimos por dimensión “time”
-            da_concat = xr.concat(data_arrays[var_short], dim="band")  # ahora band=tiempo
+            da_concat = xr.concat(data_arrays[var_short], dim="band")
             da_concat = da_concat.rename({"band": "time"})
-
-            # Asegurarnos de que la dimensión “time” tenga la misma longitud que ds.coords["time"]
             da_concat["time"] = ds["time"]
 
-            # Añadimos al dataset
             ds[var_short] = da_concat
-            ds[var_short].attrs["_FillValue"] = np.nan
 
-        # Borra la variable "spatial_ref" si existe, y limpia el grid_mapping de las variables
         if "spatial_ref" in ds:
             ds = ds.drop_vars("spatial_ref")
-        target_vars = expected_vars[:]
-        for v in target_vars:
-            if v in ds and "grid_mapping" in ds[v].attrs:
-                ds[v].attrs.pop("grid_mapping")
 
-        ds.to_netcdf(output_netcdf)
-        logging.info(f"Guardado Weather Next NetCDF en {output_netcdf}")
+        for v in list(ds.data_vars):
+            ds[v].attrs.pop("_FillValue", None)
+            ds[v].attrs.pop("grid_mapping", None)
+
+        encoding = {
+            v: {
+                "zlib": True,
+                "complevel": 4,
+                "chunksizes": (1, 128, 128),
+                "_FillValue": np.nan,
+                "dtype": "float32",
+            }
+            for v in ds.data_vars
+        }
+
+        ds.to_netcdf(output_netcdf, engine="netcdf4", encoding=encoding)
+        logging.info(f"NetCDF temporal guardado en {output_netcdf}")
+
+    except Exception as e:
+        logging.error(
+            "Error inesperado en _convert_tif_subset_to_netcdf: %s (%s)",
+            str(e), e.__class__.__name__,
+            exc_info=True
+        )
+        raise
+    finally:
+        client.close()
+        cluster.close()
+
+
+def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
+    """
+    Convierte los 6 TIFF en dos NetCDF temporales:
+      - TIFF 0,1,2 -> temp_part1.nc
+      - TIFF 3,4,5 -> temp_part2.nc
+    Luego concatena ambos por time y guarda el NetCDF final.
+    """
+    if not tif_files:
+        raise ValueError("La lista de archivos .tif está vacía. Nada que convertir.")
+
+    if len(tif_files) < 6:
+        raise ValueError(
+            f"Se esperaban al menos 6 TIFFs, pero solo llegaron {len(tif_files)}."
+        )
+
+    temp_nc_1 = output_netcdf.replace(".nc", "_part1.nc")
+    temp_nc_2 = output_netcdf.replace(".nc", "_part2.nc")
+
+    try:
+        # Primera mitad: bloques 0,1,2
+        _convert_tif_subset_to_netcdf(tif_files[:3], temp_nc_1)
+
+        # Segunda mitad: bloques 3,4,5
+        _convert_tif_subset_to_netcdf(tif_files[3:6], temp_nc_2)
+
+        logging.info("Abriendo NetCDFs temporales para unirlos...")
+        ds1 = xr.open_dataset(temp_nc_1, chunks={"time": 1, "lat": 128, "lon": 128})
+        ds2 = xr.open_dataset(temp_nc_2, chunks={"time": 1, "lat": 128, "lon": 128})
+
+        ds_final = xr.concat([ds1, ds2], dim="time")
+        ds_final = ds_final.sortby("time")
+
+        for v in list(ds_final.data_vars):
+            ds_final[v].attrs.pop("_FillValue", None)
+            ds_final[v].attrs.pop("grid_mapping", None)
+
+        encoding = {
+            v: {
+                "zlib": True,
+                "complevel": 4,
+                "chunksizes": (1, 128, 128),
+                "_FillValue": np.nan,
+                "dtype": "float32",
+            }
+            for v in ds_final.data_vars
+        }
+
+        ds_final.to_netcdf(output_netcdf, engine="netcdf4", encoding=encoding)
+        logging.info(f"Guardado Weather Next NetCDF final en {output_netcdf}")
+
+        ds1.close()
+        ds2.close()
+        ds_final.close()
+
+        # borrar temporales
+        if os.path.exists(temp_nc_1):
+            os.remove(temp_nc_1)
+        if os.path.exists(temp_nc_2):
+            os.remove(temp_nc_2)
 
     except Exception as e:
         logging.error(
@@ -713,11 +821,8 @@ def convert_forecast_tifs_to_netcdf(tif_files, output_netcdf):
             str(e), e.__class__.__name__,
             exc_info=True
         )
-        raise  #reintentar descargar los archivos desde el inicio
-    finally:
-        # Cerremos el cluster de Dask para liberar recursos
-        client.close()
-        cluster.close()
+        raise
+
 
 def add_elevation(nc_file, elevation_tif, output_file):
     # Cargar archivo nc con todas las variables y el tiff de elevation
@@ -948,22 +1053,25 @@ def main():
     FOLDER_NAMES = []
 
     # Initialize Google Earth Engine (reintenta si no hay conexión)
-    #os.environ['EARTHENGINE_TOKEN'] = EARTHENGINE_TOKEN
     initialize_GEE()
     # #autentificar en google drive
     service = authenticate_drive()
+
+
 
     horarios_permitidos = {0, 6, 12, 18}
     last_hour = None
     while True:
         # Busca los archivos de cada zona
-        zonas = ['pacifico', 'atlantico']
+        zonas = ['atlantico', 'pacifico']
         for zona in zonas:
             # Obtener la hora actual en la zona horaria de México
             now_mexico = datetime.now(standar_time_zone)
+            #restar 6 horas a now_mexico por el UTC y porque ahora hay un delay mucho mayor entre la hora de corte y la disponibilidad de los datos, entonces así nos aseguramos que ya estén disponibles
+            now_mexico = now_mexico - timedelta(hours=6)
             ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
             now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0) #el bueno
-            #now_mexico = now_mexico.replace(day=14, hour=0, minute=0, second=0, microsecond=0)
+            #now_mexico = now_mexico.replace(hour=0, minute=0, second=0, microsecond=0)
             # crear el nombre de archivo si está dentro del horario permitido
             fecha_string = now_mexico.strftime('%Y%m%d_%H')
 
@@ -973,7 +1081,7 @@ def main():
             output_file = f'{output_dir}regional_weathernext_{fecha_string}_{zona}.nc' #el archivo final
             # Crea los directorios si no existen
             os.makedirs(os.path.dirname(aux_dir), exist_ok=True)
-            os.makedirs(os.path.dirname(output_dir), exist_ok=True)
+            os.makedirs(os.path.dirname(output_dir), exist_ok=True) 
 
             # si el archivo más reciente ya existe, no es necesario descargarlo
             if os.path.exists(output_file):
@@ -998,7 +1106,7 @@ def main():
                     task_names, FOLDER_NAMES = get_surface_elevation(now_mexico, region_roi, zona, task_names, FOLDER_NAMES) 
                     
                     ##########################################################
-                    check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service)
+                    check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service, inicio)
                     #########################################################################
 
                     #agregar la ruta de los archivos a la lista de tareas (menos el de surface_elevation)
@@ -1021,8 +1129,13 @@ def main():
 
                 except IncompleteBlockError:
                     logging.debug(
-                        "Bloque incompleto: No son 250 imágenes. Reintentando en 60s."
+                        "Bloque incompleto: No son 250/640/576 imágenes. Reintentando en 60s."
                     )
+                except TimeoutDrive as e:
+                    logging.error(
+                        "No se encontraron las carpetas en Drive después de 3 horas, posible cancelación de tarea o eliminación de carpeta en Drive. Reiniciando secuencia de descarga."
+                    )
+                    break
                 except RetryExhaustedError as e:
                     logging.error(
                         "Fallo transitorio detectado en zona '%s': %s. Revisando conexión",
@@ -1036,6 +1149,17 @@ def main():
                         str(e), e.__class__.__name__,
                         exc_info=True
                     )
+                except OSError as e:
+                    if is_retryable_os_error(e):
+                        logging.error(
+                            "Error de red local (OSError errno=%s): %s (%s). "
+                            "Revisando conexión.",
+                            getattr(e, "errno", None), str(e), e.__class__.__name__,
+                            exc_info=True
+                        )
+                        wait_for_stable_connection()
+                    else:
+                        raise
                 except EEException as e:
                     logging.error(
                         "Error de Earth Engine: %s (%s). "
@@ -1067,14 +1191,14 @@ def main():
                     )
                 time.sleep(60) #espera para las excepciones
 
-        #cada vez que el minuto actual sea 0, intenta descargar los shp_files de probabilidad de ciclones
+        #cada vez que el minuto actual sea 1,2 o 3, intenta descargar los shp_files de probabilidad de ciclones
         try:
             now_mexico = datetime.now(standar_time_zone)
             output_shp_dir = f"{datasets_dir}NOAA_files"
             if not os.path.exists(output_shp_dir):
                 os.makedirs(output_shp_dir)
                 os.chmod(output_shp_dir, 0o777)
-            if (now_mexico.minute == 0 and now_mexico.hour != last_hour) or (len(os.listdir(output_shp_dir)) == 0):
+            if (now_mexico.minute in {1,2,3} and now_mexico.hour != last_hour) or (len(os.listdir(output_shp_dir)) == 0):
                 #descargar el shapefile de zonas de probabilidad de TC
                 url = "https://www.nhc.noaa.gov/xgtwo/gtwo_shapefiles.zip"
                 download_zip(url, output_shp_dir, 'zip')
@@ -1085,6 +1209,7 @@ def main():
                 str(e), e.__class__.__name__,
                 exc_info=True
             )
+            time.sleep(60) #espera para las excepciones
 
 
 if __name__ == '__main__':

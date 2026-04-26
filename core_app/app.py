@@ -13,13 +13,13 @@ def create_app():
     app = Flask(__name__)
 
     # --- Configuration Setup ---
-    # Resolve SQLite database path relative to this app directory unless an absolute path is provided.
-    base_dir = os.path.abspath(os.path.dirname(__file__))
+    # Resolve SQLite database path relative to the repository root unless an absolute path is provided.
+    repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     db_file = os.getenv("DATABASE_FILE", "./data/db/app_database.db")
     if os.path.isabs(db_file):
         db_path = db_file
     else:
-        db_path = os.path.abspath(os.path.join(base_dir, db_file))
+        db_path = os.path.abspath(os.path.join(repo_root, db_file))
 
     os.makedirs(os.path.dirname(db_path), exist_ok=True)
     
