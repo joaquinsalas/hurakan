@@ -5,12 +5,6 @@
 #cada 6 horas ejecuta la descarga de la imagen más reciente y la guarda en una carpeta
 #primero descarga el pacífico y cuando termina descarga el atlántico
 
-
-#de los errores de red:
-# hay unos que pueden intentarse un par de veces y continuar con el siguiente proceso aunque no haya red. Por ejemplo: si no se pudo borrar un archivo de la papelera,se intenta con el siguiente
-# hay unos que puden intentarse un par de vees, pero regresar al inicio si es se acaban los intento (por ejemplo, error 500 tratando descargar un archivo. Dede regresar al incio, porque si tarda mucho, puede que ya ni siquiera necesitemos ese arhchivo cuando se reestablezca la conexión)
-# hay otros que deben intentarse indefinidamente en el mismo punto hasta regresar al inico (como la primera autentificación)
-
 import ee
 import xarray as xr
 import rioxarray as rxr
@@ -78,32 +72,6 @@ class TimeoutDrive(Exception):
     """No se encontraron las carpetas en Drive después de 3 horas, posible cancelación de tarea o eliminación de carpeta en Drive. Reiniciando secuencia de descarga."""
     pass
 
-# TEMPORAL #######################################################################################
-def simulate_network_failure(mode):
-    if mode == "dns":
-        raise socket.gaierror("Simulación DNS")
-    elif mode == "conn":
-        raise requests.exceptions.ConnectionError("Simulación ConnectionError")
-    elif mode == "timeout":
-        raise requests.exceptions.Timeout("Simulación Timeout")
-    elif mode == "ee":
-        raise EEException("Simulated internal error 500")
-
-class FakeResponse:
-    def __init__(self, status, reason="Simulated Error"):
-        self.status = status
-        self.reason = reason
-def simulate_http_error(code=500, reason="Internal Server Error", error_reason="internalError"):
-    content = f"""
-    {{
-        "error": {{
-            "code": {code},
-            "message": "{reason}",
-            "errors": [{{"message": "{reason}", "domain": "global", "reason": "{error_reason}"}}]
-        }}
-    }}
-    """.encode("utf-8")
-    raise HttpError(FakeResponse(code, reason), content)
 
 #definición de métodos ##########################|##################################################
 #Autentica con la API de Google Drive usando OAuth2.
