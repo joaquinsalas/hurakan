@@ -41,6 +41,8 @@ from config import variables # vars meteorologicas desde WN
 from config import project_name, credentials_path #google cloud project
 from config import SCOPES, timezone #otros
 
+standar_time_zone = pytz.timezone(timezone)
+
 RETRYABLE_HTTP_STATUS = {500, 502, 503, 504}
 RETRYABLE_EXCEPTIONS = (
     socket.gaierror,          # fallo DNS / resolución de nombre
@@ -502,17 +504,18 @@ def get_surface_elevation(now_mexico, region_roi, zona, task_names, FOLDER_NAMES
         raise
 
 #guarda el tiempo en que tardó descargarse cada archivo en la ultima linea de un txt
-def log_time(segundos, archivo_nc, ruta):
+def log_time(segundos, archivo_nc):
     # Crea la carpeta si no existe
-    os.makedirs(os.path.dirname(ruta), exist_ok=True)
+    os.makedirs(os.path.dirname(txt_time_dir), exist_ok=True)
     # si el txt no existe, lo crea con la cabecera
     if not os.path.exists(txt_time_dir):
         with open(txt_time_dir, 'w') as f:
             f.write("filename,download_time_mins\n")
+        os.chmod(txt_time_dir, 0o777)
         logging.info(f"Archivo creado: {txt_time_dir}")
 
     archivo_name = archivo_nc.split('/')[-1] 
-    with open(ruta, "a") as f:  # 'a' agrega la linea al final del archivo
+    with open(txt_time_dir, "a") as f:  # 'a' agrega la linea al final del archivo
         f.write(f"{archivo_name},{segundos/60} mins\n")
 
 def export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES):
@@ -924,7 +927,7 @@ def vaciar_drive(service):
             exc_info=True
         )
 
-def borrar_archivos(output_dir, aux_dir, inicio, txt_time_dir, service, output_file):
+def borrar_archivos(output_dir, aux_dir, inicio,service, output_file):
     # Eliminar todos los archivos del directorio final excepto el que acabamos de crear
     for file in os.listdir(output_dir):
         file_path = os.path.join(output_dir, file)
@@ -940,7 +943,7 @@ def borrar_archivos(output_dir, aux_dir, inicio, txt_time_dir, service, output_f
     #calcular le tiempo que tardó todo el proceso
     fin = time.time()  # Fin del contador
     duracion = fin - inicio # tiempo que tardó en descargarse el archivo
-    log_time(duracion, output_file, txt_time_dir)
+    log_time(duracion, output_file)
 
     # borrar las carpetas tipo 'EarthEngineForecasts_YYYYMMDD_HH_' y vaciar la papelera de drive
     vaciar_drive(service)
@@ -1008,6 +1011,19 @@ def download_zip(url, output_dir, type):
             exc_info=True
         )  
 
+def get_now_time():
+    horarios_permitidos = {0, 6, 12, 18}
+    # Obtener la hora actual en la zona horaria de México
+    now_mexico = datetime.now(standar_time_zone)
+    #restar 6 horas a now_mexico por el UTC y porque ahora hay un delay mucho mayor entre la hora de corte y la disponibilidad de los datos, entonces así nos aseguramos que ya estén disponibles
+    now_mexico = now_mexico - timedelta(hours=6)
+    ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
+    now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0) #el bueno
+    #now_mexico = now_mexico.replace(hour=0, minute=0, second=0, microsecond=0)
+    # crear el nombre de archivo si está dentro del horario permitido
+    fecha_string = now_mexico.strftime('%Y%m%d_%H')
+    return now_mexico, fecha_string
+
 # main ##########################################################################################
 def main():
     # Setup logging (solo se escribirán los logs de INFO en adelante)
@@ -1017,83 +1033,77 @@ def main():
 
 
     #declaración de variables
-    standar_time_zone = pytz.timezone(timezone)
     FOLDER_NAMES = []
 
     # Initialize Google Earth Engine (reintenta si no hay conexión)
     initialize_GEE()
     # #autentificar en google drive
     service = authenticate_drive()
-
-
-
-    horarios_permitidos = {0, 6, 12, 18}
+    
     last_hour = None
     while True:
         # Busca los archivos de cada zona
         zonas = ['atlantico', 'pacifico']
         for zona in zonas:
-            # Obtener la hora actual en la zona horaria de México
-            now_mexico = datetime.now(standar_time_zone)
-            #restar 6 horas a now_mexico por el UTC y porque ahora hay un delay mucho mayor entre la hora de corte y la disponibilidad de los datos, entonces así nos aseguramos que ya estén disponibles
-            now_mexico = now_mexico - timedelta(hours=6)
-            ultimo_horario = max([h for h in horarios_permitidos if h <= now_mexico.hour])
-            now_mexico = now_mexico.replace(hour=ultimo_horario, minute=0, second=0, microsecond=0) #el bueno
-            #now_mexico = now_mexico.replace(hour=0, minute=0, second=0, microsecond=0)
-            # crear el nombre de archivo si está dentro del horario permitido
-            fecha_string = now_mexico.strftime('%Y%m%d_%H')
-
             # Definir directorios dependiendo de la zona
-            aux_dir = f'{app_dir}auxiliary_files_{zona}/'
-            output_dir = f'{datasets_dir}{zona}/'
-            output_file = f'{output_dir}regional_weathernext_{fecha_string}_{zona}.nc' #el archivo final
+            aux_dir = os.path.join(app_dir, f'auxiliary_files_{zona}')
+            output_dir = os.path.join(datasets_dir, zona)
             # Crea los directorios si no existen
-            os.makedirs(os.path.dirname(aux_dir), exist_ok=True)
-            os.makedirs(os.path.dirname(output_dir), exist_ok=True) 
+            os.makedirs(aux_dir, exist_ok=True)
+            os.makedirs(output_dir, exist_ok=True)
+            os.chmod(aux_dir, 0o777)
+            os.chmod(output_dir, 0o777)
 
-            # si el archivo más reciente ya existe, no es necesario descargarlo
-            if os.path.exists(output_file):
-                logging.debug(f"El archivo {output_file} ya existe, no es necesario descargar.")
-                continue
+            #limina lo que pueda haber en las carpetas auxiliares, en caso de que estemos despertando de un corte de luz
+            for file in os.listdir(aux_dir):
+                file_path = os.path.join(aux_dir, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
 
             while True: #reintentar indefinidamente cada zona hasta que se descargue correctamente
                 try:
-                    # Define el polígono
-                    if zona == 'pacifico':
-                        region_roi = ee.FeatureCollection(pacific_polygon).geometry() #region atlántico
-                    elif zona == 'atlantico':
-                        region_roi = ee.FeatureCollection(atlantic_polygon).geometry() #region atlántico
+                    now_mexico, fecha_string = get_now_time()
+                    output_file = os.path.join(output_dir, f'regional_weathernext_{fecha_string}_{zona}.nc') #el archivo final
+                    # si el archivo más reciente no existe, es necesario descargarlo
+                    if not os.path.exists(output_file):
+                        # Define el polígono
+                        if zona == 'pacifico':
+                            region_roi = ee.FeatureCollection(pacific_polygon).geometry() #region atlántico
+                        elif zona == 'atlantico':
+                            region_roi = ee.FeatureCollection(atlantic_polygon).geometry() #region atlántico
 
-                    FOLDER_NAMES.clear()  # Limpiar la lista de nombres de carpetas
-                    inicio = time.time()  # Inicio del contador de tiempo
+                        FOLDER_NAMES.clear()  # Limpiar la lista de nombres de carpetas
+                        inicio = time.time()  # Inicio del contador de tiempo
 
-                    # crean las task de que el bloque se cargue en google drive
-                    task_names, FOLDER_NAMES= export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES)
+                        # crean las task de que el bloque se cargue en google drive
+                        task_names, FOLDER_NAMES= export_forecast_block_to_drive(now_mexico, region_roi, zona, FOLDER_NAMES)
 
-                    #descarga como un tiff la surface elevation
-                    task_names, FOLDER_NAMES = get_surface_elevation(now_mexico, region_roi, zona, task_names, FOLDER_NAMES) 
-                    
-                    ##########################################################
-                    check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service, inicio)
-                    #########################################################################
+                        #descarga como un tiff la surface elevation
+                        task_names, FOLDER_NAMES = get_surface_elevation(now_mexico, region_roi, zona, task_names, FOLDER_NAMES) 
+                        
+                        ##########################################################
+                        check_files_before_download(task_names, aux_dir, FOLDER_NAMES, service, inicio)
+                        #########################################################################
 
-                    #agregar la ruta de los archivos a la lista de tareas (menos el de surface_elevation)
-                    task_names = [os.path.join(aux_dir, name) for name in task_names]
-                    task_names = [t for t in task_names if 'surface_elevation' not in os.path.basename(t)]
+                        #agregar la ruta de los archivos a la lista de tareas (menos el de surface_elevation)
+                        task_names = [os.path.join(aux_dir, name) for name in task_names]
+                        task_names = [t for t in task_names if 'surface_elevation' not in os.path.basename(t)]
 
-                    #convertir el par de tiff en un solo netcdf
-                    nc_file_WN = f'{aux_dir}regional_weathernext_{fecha_string}.nc'
-                    convert_forecast_tifs_to_netcdf(task_names, nc_file_WN)
+                        #convertir el par de tiff en un solo netcdf
+                        nc_file_WN = os.path.join(aux_dir, f'regional_weathernext_{fecha_string}.nc')
+                        convert_forecast_tifs_to_netcdf(task_names, nc_file_WN)
 
-                    # a este nc agregarle la elevation
-                    add_elevation(nc_file_WN, f'{aux_dir}surface_elevation_{fecha_string}_{zona}.tif', output_file)
+                        # a este nc agregarle la elevation
+                        add_elevation(nc_file_WN, os.path.join(aux_dir, f'surface_elevation_{fecha_string}_{zona}.tif'), output_file)
 
-                    #eliminación de archivos temporales y calculo del tiempo
-                    borrar_archivos(output_dir, aux_dir, inicio, txt_time_dir, service, output_file)
+                        #eliminación de archivos temporales y calculo del tiempo
+                        borrar_archivos(output_dir, aux_dir, inicio, service, output_file)
 
-                    #finish_download += 1
-                    logging.info(f"Descarga de {output_file} finalizada.")
-                    break
+                        #finish_download += 1
+                        logging.info(f"Descarga de {output_file} finalizada.")
+                        break
+                    else:
+                        logging.debug(f"El archivo {output_file} ya existe, no es necesario descargar.")
 
                 except IncompleteBlockError:
                     logging.debug(
@@ -1162,9 +1172,9 @@ def main():
         #cada vez que el minuto actual sea 1,2 o 3, intenta descargar los shp_files de probabilidad de ciclones
         try:
             now_mexico = datetime.now(standar_time_zone)
-            output_shp_dir = f"{datasets_dir}NOAA_files"
+            output_shp_dir = os.path.join(datasets_dir, "NOAA_files")
             if not os.path.exists(output_shp_dir):
-                os.makedirs(output_shp_dir)
+                os.makedirs(output_shp_dir, exist_ok=True)
                 os.chmod(output_shp_dir, 0o777)
             if (now_mexico.minute in {1,2,3} and now_mexico.hour != last_hour) or (len(os.listdir(output_shp_dir)) == 0):
                 #descargar el shapefile de zonas de probabilidad de TC
