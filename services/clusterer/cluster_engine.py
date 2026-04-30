@@ -26,8 +26,9 @@ class ClusterEngine:
             min_size (int): Minimum number of members to keep a cluster.
         """
         n_traj = len(trajectories)
-        if n_traj < 2:
-            return {'trajectories': trajectories, 'clusters': np.ones(n_traj, dtype=int)}
+
+        if n_traj < min_size:
+            return {'trajectories': [], 'clusters': np.array([])}
 
         # Build Distance Matrix
         dist_matrix = np.zeros((n_traj, n_traj))
