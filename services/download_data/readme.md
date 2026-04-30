@@ -1,4 +1,4 @@
-# `whole version/services/download_data`
+# `services/download_data`
 
 This directory contains the modular data-download service for WeatherNext forecasts and NOAA shapefiles.
 

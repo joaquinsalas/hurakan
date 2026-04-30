@@ -1,4 +1,4 @@
-# `whole version/core_app/templates`
+# `core_app/templates`
 
 This directory does not contain `.py` or `.m` source scripts.
 

@@ -13,8 +13,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code
 COPY . .
 
-# Expose port 5001 to accommodate the port the app runs on
-EXPOSE 8081
+# Expose port 443 to accommodate the port the app runs on
+EXPOSE 443
 
 # Run app.py when the container launches
 CMD ["python", "app.py"]

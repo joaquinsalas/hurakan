@@ -1,4 +1,4 @@
-# `whole version/services/classifier`
+# `services/classifier`
 
 This directory contains the classifier service used to estimate whether a trajectory cluster represents a mature tropical cyclone.
 
