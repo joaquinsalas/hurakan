@@ -1058,8 +1058,14 @@ def main():
             # Crea los directorios si no existen
             os.makedirs(aux_dir, exist_ok=True)
             os.makedirs(output_dir, exist_ok=True)
-            os.chmod(aux_dir, 0o777)
-            os.chmod(output_dir, 0o777)
+            try:
+                os.chmod(aux_dir, 0o777)
+            except PermissionError:
+                logging.warning(f"No se pudieron cambiar los permisos de {aux_dir}, pero se continuará.")
+            try:
+                os.chmod(output_dir, 0o777)
+            except PermissionError:
+                logging.warning(f"No se pudieron cambiar los permisos de {output_dir}, pero se continuará.")
 
             #elimina lo que pueda haber en las carpetas auxiliares, en caso de que estemos despertando de un corte de luz
             borrar_general(aux_dir)
@@ -1108,6 +1114,7 @@ def main():
                         break
                     else:
                         logging.debug(f"El archivo {output_file} ya existe, no es necesario descargar.")
+                        break
 
                 except IncompleteBlockError:
                     logging.debug(
