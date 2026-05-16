@@ -365,6 +365,10 @@ def secuencia_descarga_drive(aux_dir, FOLDER_NAMES, service, inicio):
     # 2) bucle principal: cada minuto revisa las carpetas pendientes
     while len(downloaded) < len(folder_ids):
         for name, fid in folder_ids.items():
+            # si lleva más de 3 horas sin poder descargar, manda una excepción para reiniciar la descarga
+            if time.time() - inicio > (3*3600):
+                raise TimeoutDrive()
+            
             if name in downloaded:
                 continue
 
@@ -927,18 +931,21 @@ def vaciar_drive(service):
             exc_info=True
         )
 
-def borrar_archivos(output_dir, aux_dir, inicio,service, output_file):
+def borrar_general(output_dir, output_file = None):
     # Eliminar todos los archivos del directorio final excepto el que acabamos de crear
     for file in os.listdir(output_dir):
         file_path = os.path.join(output_dir, file)
-        if file_path != output_file and os.path.isfile(file_path):
-            os.remove(file_path)
-    
-    #eliminar los archivos auxiliares
-    for file in os.listdir(aux_dir):
-        file_path = os.path.join(aux_dir, file)
+        if output_file and file_path == output_file:
+            continue
         if os.path.isfile(file_path):
             os.remove(file_path)
+
+def borrar_archivos(output_dir, aux_dir, inicio,service, output_file):
+    # Eliminar todos los archivos del directorio final excepto el que acabamos de crear
+    borrar_general(output_dir, output_file)
+    
+    #eliminar los archivos auxiliares
+    borrar_general(aux_dir)
 
     #calcular le tiempo que tardó todo el proceso
     fin = time.time()  # Fin del contador
@@ -1054,11 +1061,8 @@ def main():
             os.chmod(aux_dir, 0o777)
             os.chmod(output_dir, 0o777)
 
-            #limina lo que pueda haber en las carpetas auxiliares, en caso de que estemos despertando de un corte de luz
-            for file in os.listdir(aux_dir):
-                file_path = os.path.join(aux_dir, file)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
+            #elimina lo que pueda haber en las carpetas auxiliares, en caso de que estemos despertando de un corte de luz
+            borrar_general(aux_dir)
 
             while True: #reintentar indefinidamente cada zona hasta que se descargue correctamente
                 try:
@@ -1113,6 +1117,7 @@ def main():
                     logging.error(
                         "No se encontraron las carpetas en Drive después de 3 horas, posible cancelación de tarea o eliminación de carpeta en Drive. Reiniciando secuencia de descarga."
                     )
+                    borrar_general(aux_dir)
                     break
                 except RetryExhaustedError as e:
                     logging.error(
