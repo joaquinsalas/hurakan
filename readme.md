@@ -15,7 +15,31 @@
 ## About <a name = "about"></a>
 Hurakán is multi-service web-based platform that provides forecasts of tropical cyclone (TC) trajectories.
 
-It integrates atmospheric scenarios produced by probabilistic data-driven forecasting systems. Also, it Uses globally available data, but requires Regions of Interest (RoI) to focus to certain areas like specific coastlines.
+It integrates atmospheric scenarios produced by probabilistic data-driven forecasting systems. The present implementation focuses on Regions of Interest (RoI) focused around the coastlines of Mexico.
+
+This code is distributed under the following licensing agreement
+
+MIT License
+
+Copyright (c) 2025 Instituto Politécnico Nacional
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 
 
 ## Getting Started <a name = "getting_started"></a>
