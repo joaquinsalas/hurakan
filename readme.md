@@ -77,6 +77,8 @@ See [User manual](./core_app/docs/manuals/usermanual.md) for detailed instructio
 See [File Structure](./core_app/docs/manuals/filestructure.md) for visualizing the file organization for Hurakán.
 
 ## Built Using <a name = "built_using"></a>
+Make sure you install the following libraries and programs in your system.
+
 - [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
 - [Docker](https://docker.com/) - A safer container ecosystem
 - [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) - Collection of detection and characterization algorithms for large climate datasets
