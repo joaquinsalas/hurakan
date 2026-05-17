@@ -98,7 +98,8 @@ for mobile-friendly interactive maps
 - [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interface, systems engineering
 - [@joaquinsalas](https://github.com/joaquinsalas) - initial code for downloading, clustering, performance evaluation, funding grantee, coordination
 
-See also the list of [contributors]([https://github.com/joaquinsalas/graphs/contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/ackowledgements.md)) who participated in this project.
+
+See also the list of [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md) who participated in this project.
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 We downloaded GenCast and FGN historical forecasts of meteorological variables from the Google Earth Engine WeatherNext Gen Forecasts and WeatherNext 2 data catalogs.
