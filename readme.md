@@ -95,11 +95,12 @@ for mobile-friendly interactive maps
 ## Authors <a name = "authors"></a>
 - [@NathalieAlvarez](https://github.com/NathalieAlvarez) - data download, clustering, classifiers
 - [@robertorojas11](https://github.com/robertorojas11) - trajectories, performance, systems engineering
-- [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interfase, systems engineering
-- [@joaquinsalas](https://github.com/joaquinsalas) - idea, algorithms, QA
+- [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interface, systems engineering
+- [@joaquinsalas](https://github.com/joaquinsalas) - initial code for downloading, clustering, performance evaluation, funding grantee, coordination
 
 See also the list of [contributors](https://github.com/joaquinsalas/graphs/contributors) who participated in this project.
 
 ## Acknowledgements <a name = "acknowledgement"></a>
-We downloaded GenCast and FGN historical forecasts of meteorological variables from the Google Earth Engine WeatherNext Gen Forecasts and WeatherNext 2 data catalogs
+We downloaded GenCast and FGN historical forecasts of meteorological variables from the Google Earth Engine WeatherNext Gen Forecasts and WeatherNext 2 data catalogs.
+This work was partially supported  by SECIHTI via grant MADTEC-M-9 to Joaquín Salas, Roberto Rojas, and Yael Huerta. Nathalie Alvarez has been supported by a scholarship from SECIHTI.
 
