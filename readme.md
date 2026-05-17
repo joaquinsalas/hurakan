@@ -5,6 +5,7 @@
 
 ## Table of Contents
 - [About](#about)
+- [Licensing](#licensing)
 - [Getting Started](#getting_started)
 - [Usage](#usage)
 - [Built Using](#built_using)
@@ -16,6 +17,9 @@
 Hurakán is multi-service web-based platform that provides forecasts of tropical cyclone (TC) trajectories.
 
 It integrates atmospheric scenarios produced by probabilistic data-driven forecasting systems. The present implementation focuses on Regions of Interest (RoI) focused around the coastlines of Mexico.
+
+
+## Licensing  <a name = "licensing"></a>
 
 This code is distributed under the following licensing agreement
 
@@ -91,7 +95,6 @@ for mobile-friendly interactive maps
 ## Authors <a name = "authors"></a>
 - [@NathalieAlvarez](https://github.com/NathalieAlvarez) - data download, clustering, classifiers
 - [@robertorojas11](https://github.com/robertorojas11) - trajectories, performance, systems engineering
-- [@LuisManuelOrtiz](https://github.com/LuisManuelOrtiz) -
 - [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interfase, systems engineering
 - [@joaquinsalas](https://github.com/joaquinsalas) - idea, algorithms, QA
 
