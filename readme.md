@@ -67,11 +67,11 @@ cd hurakan
 docker compose up --build
 ```````````````````````````````````````````````````````
 
-## Installation manual
-For detailed instructions see [Installation](./core_app/docs/manuals/install.md) 
+## Installation Manual
+For detailed instructions see the [Installation Manual](./core_app/docs/manuals/install.md) 
 
-## Usage <a name = "usage"></a>
-See [User manual](./core_app/docs/manuals/usermanual.md) for detailed instructions to use Hurakán.
+## User's Manual <a name = "usage"></a>
+See [User's Manual](./core_app/docs/manuals/usermanual.md) for detailed instructions to use Hurakán.
 
 ### App files stucture
 See [File Structure](./core_app/docs/manuals/filestructure.md) for visualizing the file organization for Hurakán.
