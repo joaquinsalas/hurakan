@@ -1,4 +1,4 @@
-# System User Manual
+# System User's Manual
 
 ## Introduction
 The Hurricane system facilitates the detection and monitoring of tropical cyclones through the visualization and analysis of potential meteorological phenomena, using detailed current information (temperature, pressure, humidity, and wind conditions in basins of interest) and its temporal processing. The main objective is to detect and monitor potential storms that could affect living conditions in coastal areas.
