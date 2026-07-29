@@ -7,7 +7,6 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 - [Requirements](#requirements)
 - [Accessing Hurakán](#accessing)
 - [Interface Description](#interface)
-- [Available Information and Context Window](#available)
 - [Activities](#activities)
 - [Examples of Forecasting](#examples)
 - [References](#references)
