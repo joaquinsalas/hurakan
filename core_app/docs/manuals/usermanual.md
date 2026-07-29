@@ -45,7 +45,7 @@ When accesing the initial window or the `login` window, the person must input th
 
 | Figure 1 | Figure 2 |
 | :---: | :---: |
-| ![Caption 1]("../figures/02hurakan_login.png") | ![Caption 2]("../figures/03hurakan_logout.png") |
+| ![Caption 1](../figures/02hurakan_login.png) | ![Caption 2](../figures/03hurakan_logout.png) |
 | *Optional Subtitle 1* | *Optional Subtitle 2* |
 | [Source 1](url1) | [Source 2](url2) |
 
