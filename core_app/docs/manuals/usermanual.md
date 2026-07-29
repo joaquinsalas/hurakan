@@ -5,9 +5,8 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 
 ## Table of Contents
 - [Requirements](#requirements)
-- [Available Information and Context Window](#available)
 - [Accessing Hurakán](#accessing)
-- [Login and Logout](#login)
+- [Available Information and Context Window](#available)
 - [Activities](#activities)
 - [Interface Description](#interface)
 - [Examples of Forecasting](#examples)
@@ -27,11 +26,6 @@ To properly visualize the possible trajectories and their cones of uncertainty f
 - A client web browser with Javascript enabled (Google Chrome 146, Safari 17, Microsoft Edge 145, or Mozilla Firefox 148 are recommended).
 - System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
 
-## Available Information and Context Window<a name = "available"></a>
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
-
-<img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
-Figure 2. 20260729 Tropical Cyclone Genevieve. Example of the interactive hurricane system map. Given WeatherNext 2 [[1]](#reference-1) data for a date, such as July 29, 2026, the forecasted trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
 
 
 ## Accessing Hurakán<a name = "accessing"></a>
@@ -43,7 +37,7 @@ List of possible URL to access services in Hurakán
 - `https://hurakan.cicataqro.ipn.mx/logout` - `logout` window
 - `https://hurakan.cicataqro.ipn.mx/health` - `status` window
 
-## Login and Logout <a name = "login"></a>
+
 Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
 When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 3.
 
@@ -56,6 +50,15 @@ When finish using Hurakán, the web browser can be closed or type in the browser
 
 <img src="../figures/hurakan_logout.png" alt="logout window" />
 Figure 4. Logout window. Upon a succesful logout operation, this window will show up. 
+
+
+## Available Information and Context Window<a name = "available"></a>
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
+
+<img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
+Figure 2. 20260729 Tropical Cyclone Genevieve. Example of the interactive hurricane system map. Given WeatherNext 2 [[1]](#reference-1) data for a date, such as July 29, 2026, the forecasted trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
+
+
 
 ## Activities<a name = "activities"></a>
 In the Hurakán system, given the available information, the following activities can be performed:
