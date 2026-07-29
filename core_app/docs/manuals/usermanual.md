@@ -77,7 +77,7 @@ Figure 11. The Saffir-Simpson scale showns several categories of wind speed with
 
 - World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
 - There is an "Info" tab that summarizes all the possible identified trajectories.
-- 
+  
 
 ## Available Information and Context Window<a name = "available"></a>
 Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
