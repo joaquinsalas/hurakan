@@ -39,25 +39,19 @@ List of possible URL to access services in Hurakán
 
 
 Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
-When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 2.
+When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 2(a).
+After login, the next window will show the map for the data available and will allow interaction with the system.
+When finish using Hurakán, the web browser can be closed or type in the browser address bar `https://hurakan.cicataqro.ipn.mx/logout`. A window will pop out and show what is illustred in Figure 2(b).
 
 
-
-| Figure 1 | Figure 2 |
 | :---: | :---: |
 | <img src="../figures/02hurakan_login_2.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout_2.png" alt="Hurakán logout screen" width="420"> |
-| *Login screen* | *Logout screen* |
-
+| (a) *Login screen* | (b) *Logout screen* |
 
 <img src="../figures/02hurakan_login.png" alt="login window" />
-Figure 2. Login window. Credentials are provided by the system administrator.
+Figure 2. Login/Logout window. Credentials are provided by the system administrator.
 
-After login, the next window will show the map for the data available and will allow interaction with the system.
 
-When finish using Hurakán, the web browser can be closed or type in the browser address bar `https://hurakan.cicataqro.ipn.mx/logout`. A window will pop out and show what is illustred in Figure 3.
-
-<img src="../figures/03hurakan_logout.png" alt="logout window" />
-Figure 3. Logout window. Upon a succesful logout operation, this window will show up. 
 
 
 ## Interface description<a name = "interface"></a>
