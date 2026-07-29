@@ -24,7 +24,7 @@ Figure 1. The defined regions of interest include Northeastern Pacific (blue) an
 To properly visualize the possible trajectories and their cones of uncertainty for the probabilistic atmospheric data, the following are required:
 - A web server with the Hurakán platform (see [Installation Manual](../README.md) ) posting at specific URL.
 - A client web browser with Javascript enabled (Google Chrome 146, Safari 17, Microsoft Edge 145, or Mozilla Firefox 148 are recommended).
-- System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
+- System access credentials (the Hurakán system administrator can provide these credentials; see [Accessing Hurakán](#accessing)).
 
 
 
@@ -40,6 +40,15 @@ List of possible URL to access services in Hurakán
 
 Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
 When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 2.
+
+
+
+| Figure 1 | Figure 2 |
+| :---: | :---: |
+| ![Caption 1]("../figures/02hurakan_login.png") | ![Caption 2]("../figures/03hurakan_logout.png") |
+| *Optional Subtitle 1* | *Optional Subtitle 2* |
+| [Source 1](url1) | [Source 2](url2) |
+
 
 <img src="../figures/02hurakan_login.png" alt="login window" />
 Figure 2. Login window. Credentials are provided by the system administrator.
