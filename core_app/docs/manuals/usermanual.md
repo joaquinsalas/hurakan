@@ -55,20 +55,15 @@ Figure 2. Login/Logout window. Credentials are provided by the system administra
 
 ## Interface description<a name = "interface"></a>
 
-<!-- The interface is divided into two main windows:
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 5 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29.  The interface includes the following elements (see Figure 4):
 
-- Left side window or "selector". Here you can specify the date of the atmospheric data to be used (with possible predictions up to 15 days later, if supported by the data).
-
-- Right-hand side window or "map". A world map is displayed showing the possible meteors that support the selected meteorological data.
-
-### Selector Window
--->
-
-A world map is displayed showing the possible meteors that support the selected meteorological data.
-
-### Map Window
-
-Map Window Elements:
+- World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
+- Saffir-Simpson Category Box. Displays the color associated with different wind speeds. Each color distinguishes between *DT* (TD, tropical depression), *TT* (TS, tropical storm), *Ci* (hurricane categories 1, ..., 5) and provide their velocity ranges in km/h.
+- Central Panel. This panel provides the current WeatherNext 2 data being processsed in Coordinate Universal Time (UTC) standard. The central part of Mexico is UTC-6, now that the country does not shift times during Spring and Autum. It also includes a *Spaghetti* button, which can toggle to show the identified trajectories and the most probable overall trajectory for a tropical cyclone that has been deemed as strong or stronger than a tropical storm. In addition, it includes date buttons for each possible trajectory cluster that has been deemed mature enough to be classified as a tropical storm or stronger. The trajectories show the forecasted Saffir-Simpson scale colors, the starting and ending points of that trajectory, and information at the ending point. Note that the velocity of winds correspond to the average over a cell with a 0.25 degrees resolution. Therefore, the wind speed may be a conservative estimate respect to the strongest wind gust that may be observed.
+- Zoom Controls. The map view can be zoomed in or out by using either the free-wheel in some mouses or by clicking on the +/-  symbols at the upper-left corner of the screen. Note that the zoom range extends from 10 m to 1000 km.
+- Map Scale. The current scale of the map is given by the horizontal width of the rectangle in the bottom-left corner of the window, just below the Saffir-Simpson Category box. 
+- Spaghetti: The identified trajectories are shown, indicating the probable speed through it, its probable starting and ending points given the specific date. To facilitate visualization, a trajectory can be selected at its ending point (green at the start and a dark gray point at the end). For an event occurring in a certain date, the possible trajectories can be displayed turning on and off the Spaghetti botton. The default will show the spaghetties.  The latter occurs just in certain cases, basically when a cluster and classification analysis determine that an ensemble of trajectories are in a position to describe a tropical storm.  Note that each of the 50 atmospheric scenarios may contain an indetermined number of trajectories.
+- Cone of Uncertainty. If the Spaghetti boton is turned on, there will be a Cone of Uncertainty, the most likely trajectory and its band of uncertainty with two standard deviations by side. This  occurs in any event when an ensemble of trajectories form a structure mature enough to be as strong or stronger than a tropical storm. In such a case, there is a prediction about a tropical cyclone having a certain trajectory. Given the trajectories for a timestamp, an area with wide equal to two standard deviations is shown spreading along the forecasted trajectory.
 
 <img src="../figures/04window_elements.png" alt="Scale selected" />
 
@@ -76,35 +71,36 @@ Figure 4. Tropical Cyclone Genevieve. Example of the interactive hurakán system
 
 Figure 4. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
 
-- Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
-- Central panel with buttons. Displays the date of the data used, a Spaghetti button (to show all possible identified trajectories), and date buttons for each possible trajectory that could lead to a tropical cyclone (showing the date of the event, the possible trajectory using the Saffir-Simpson scale colors, the starting and ending points of that trajectory, and information at the ending point).
 
-- World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
-- There is an "Info" tab that summarizes all the possible identified trajectories.
+  - There is an "Info" tab that summarizes all the possible identified trajectories.
+
+Map Window Elements:
+
+
+
+
   
 
 ## Available Information and Context Window<a name = "available"></a>
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 5 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
 
-<img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
-Figure 5. 20260729 Tropical Cyclone Genevieve. Example of the interactive hurricane system map. Given WeatherNext 2 [[1]](#reference-1) data for a date, such as July 29, 2026, the forecasted trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
+
 
 
 
 ## Activities<a name = "activities"></a>
 In the Hurakán system, given the available information, the following activities can be performed:
-- Select the date of the data to be reviewed
-- For an event occurring in a certain date, the possible trajectories can be displayed using either Spaghetti or Cone of Uncertainty. The former occurs in any event when there is a prediction about a meteor having a certain trajectory. The latter occurs just in certain cases, basically when a cluster and classification analysis determine that an ensemble of trajectories are in a position to describe a tropical storm. Figure 6 illustrates the Spaghetti version. Note that each of the 50 atmospheric scenarios may contain an indetermined number of trajectories.
+- Date selection. If there is a tropical cyclone that has been deemed as strong or stronger than a tropical storm, there will be one or more dates to choose from.  Select the date of the data to be reviewed and then toggle between Spaghetti and most likely trajectory with cone of uncertainty.
+
 
 <img src="../figures/hurakan_spaguetti.png" alt="spaghetti button" />
 Figure 6. The Spaghetti button shows/occults the data group by individual forecast trajectories for the 50 atmospheric scenarios. Sometimes there aren't data to show, it depends on the metereological data from de day selected.
 
-  - Spaghetti: The identified trajectories are shown, indicating the probable speed of the meteor, its probable starting and ending points given the specific date. To facilitate visualization, a trajectory can be selected at its ending point, and the date information at that point will be displayed.
+  - Spaghetti: The identified trajectories are shown, indicating the probable speed of the meteor, its probable starting and ending points given the specific date. To facilitate visualization, a trajectory can be selected at its ending point, and the date information at that point will be displayed. Figure 4 and Figure 5 illustrate the Spaghetti and the Cone of Uncertainty versions.
 
 <img src="../figures/hurakan_spaguetti_info.png" alt="spaghetti info" />
 Figure 7. Spaghetti info for each possible trajectory. The info is shown at the initial and ending point of the tarjectory.
 
-  - Cone of Uncertainty. Given the trajectories for a timestamp, an area with wide equal to two standard deviations is shown spreading along the forecasted trajectory.
+  
     
 <img src="../figures/hurakan_trajectory.png" alt="Date possible trajectory and cone of uncertainty" />
 Figure 8. Overall possible trajectory for the date selected. The button(s) with the date(s) can shown a forecast of the trajectory ending in the date displayed.
@@ -112,7 +108,9 @@ Figure 8. Overall possible trajectory for the date selected. The button(s) with 
 <img src="../figures/hurakan_scale.png" alt="Scale selected" />
 Figure 9. The size of the scale in the map is shown in the bottom-left corner, below the Saffir-Simpson scale.
 
-- Interactive visualization. On the map, the central point can be moved by right-clicking on the mouse and dragging the mouse icon around the screen. Simiarly, the view can be zoomed in or out by using either the free-wheel in some mouses or by clicking on the +/-  symbols at the upper-left corner of the screen. Note that the zoom range extends from 10 m to 1000 km. The current scale of the map is given by the horizontal width of the rectangle in the bottom-left corner of th window, just below the Saffir-Simpson Category box. 
+- Interactive visualization. On the map, the central point can be moved by right-clicking on the mouse and dragging the mouse icon around the screen. Simiarly, the view can be zoomed in or out by using either the free-wheel in some mouses or by clicking on the +/-  symbols at the upper-left corner of the screen. Note that the zoom range extends from 10 m to 1000 km. The current scale of the map is given by the horizontal width of the rectangle in the bottom-left corner of th window, just below the Saffir-Simpson Category box.
+
+
 
 <img src="../figures/hurakan_zoomin.png" alt="Button zoom in" />
 Figure 10. The size of the scale in the map (shown as the horizontal length of the box at the bottom-left corner) can be reduced/increased with the `Zoom in`/`Zoom out` button at the top-right corner with the `+`/`-` sign or the mouse wheel.  
