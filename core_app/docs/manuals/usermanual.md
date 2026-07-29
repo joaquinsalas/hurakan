@@ -70,6 +70,10 @@ Figure 4. Tropical Cyclone Genevieve. Example of the interactive hurakán system
 - Region of Interest (ROI) Outline. The boundaries for the ROI are barely described in the maps. The aim is to provide the boundary of the regions for which WeatherNext 2 data is being downloaded while trying not to be obtrusive with the rest of the information being displayed. 
 
 
+<img src="../figures/04window_elements.png" alt="Scale selected" />
+
+Figure 5. Tropical Cyclone Norma. Norma de formed on October 15, 2023, ane evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Mar de Cortez and made landfall on Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty. 
+
 
 
 ## Activities<a name = "activities"></a>
