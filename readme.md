@@ -95,11 +95,6 @@ for mobile-friendly interactive maps
 - Incorporation of real-time measurements (e.g., wind data from CYGNSS) to refine the representation of cyclonic intensity
 
 ## Authors <a name = "authors"></a>
-- [@NathalieAlvarez](https://github.com/NathalieAlvarez) - data download, clustering, classifiers
-- [@robertorojas11](https://github.com/robertorojas11) - trajectories, performance, systems engineering
-- [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interface, systems engineering
-- [@joaquinsalas](https://github.com/joaquinsalas) - initial code for downloading, clustering, performance evaluation, funding grantee, coordination
-
 
 See also the list of [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md) who participated in this project.
 
