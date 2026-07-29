@@ -70,7 +70,7 @@ A world map is displayed showing the possible meteors that support the selected 
 
 Map Window Elements:
 
-<img src="../figures/04windos_elements.png" alt="Scale selected" />
+<img src="../figures/04window_elements.png" alt="Scale selected" />
 Figure 4. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
 
 - Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
