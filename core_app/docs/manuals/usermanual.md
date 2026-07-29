@@ -69,23 +69,6 @@ Given the probabilistic nature of its data, the Hurakán system generates possib
 
 Figure 4. Tropical Cyclone Genevieve. Example of the interactive hurakán system map. Given WeatherNext 2 atmospheric forecasted scenarios for a date, such as July 29, 2026, the estimated trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
 
-Figure 4. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
-
-
-  - There is an "Info" tab that summarizes all the possible identified trajectories.
-
-Map Window Elements:
-
-
-
-
-  
-
-## Available Information and Context Window<a name = "available"></a>
-
-
-
-
 
 ## Activities<a name = "activities"></a>
 In the Hurakán system, given the available information, the following activities can be performed:
