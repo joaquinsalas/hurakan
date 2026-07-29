@@ -45,8 +45,10 @@ When finish using Hurakán, the web browser can be closed or type in the browser
 
 
 | :---: | :---: |
-| <img src="../figures/02hurakan_login_2.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout_2.png" alt="Hurakán logout screen" width="420"> |
 |  *(a) Login screen* |  *(b) Logout screen* |
+| <img src="../figures/02hurakan_login_2.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout_2.png" alt="Hurakán logout screen" width="420"> |
+
+
 Figure 2. Login/Logout window. Credentials are provided by the system administrator.
 
 
