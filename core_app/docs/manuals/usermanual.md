@@ -1,16 +1,14 @@
 # System User's Manual
 
-## Introduction
-The Hurricane system facilitates the detection and monitoring of tropical cyclones through the visualization and analysis of potential meteorological phenomena, using detailed current information (temperature, pressure, humidity, and wind conditions in basins of interest) and its temporal processing. The main objective is to detect and monitor potential storms that could affect living conditions in coastal areas.
+
+The Hurakán system facilitates the detection, monitoring, and forecasting of tropical cyclones through the visualization and analysis of potential meteorological phenomena, using detailed current information about variables such as temperature, pressure, humidity, and wind conditions in basins of interest and their temporal predicted evolution. The main objective is to increase awarness about potential tropical cyclones that could affect living conditions in coastal areas. The information entered into the system consists of meteorological forecasted information of the basins of interest at a certain resolution (0.25 degrees) obtained from the Google Earth Engine collection WeatherNext 2 [[1]](#reference-1), which is updated every six hours. This information is available year-round, so it can be used any day of the year. In the present version of the Hurakán system, the basins of interest include the Northeastern Pacific and the North Atlantic, both close to the coastal areas of Mexico in the Pacific and Atlantic Oceans, as shown in  Figure 1. Historically, hurrican season runs between May 15 and November 30 for the former and from June 1 to November 30 for the latter, with the highest incidence between August and September.
 
 <img src="../figures/ROI.PNG"  alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
-Figure 1. The two basins of interest: the Eastern Pacific and the North Atlantic  
+Figure 1. The defined regions of interest include Northeastern Pacific (blue) and the North Atlantic (green) basins.  
 
-Currently, there are two basins of interest: the Eastern Pacific and the Western Atlantic, both close to the coastal areas of Mexico in the Pacific and Atlantic Oceans, as shown in the figure 1.
 
-Historically, tropical cyclones occur in the basins of interest between June and November, with the highest incidence between August and September.
 
-The information entered into the system consists of meteorological observations of the basins of interest at a certain resolution (10 m), and must be updated every 12 hours. It should be noted that this information is available year-round, so it can be used any day of the year.
+
 
 ## Requirements
 To properly visualize the possible trajectories and their cones of uncertainty for the probabilistic atmospheric data, the following are required:
@@ -19,12 +17,12 @@ To properly visualize the possible trajectories and their cones of uncertainty f
 - System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout))
 
 ## Available Information and Context Window
-Given the probabilistic nature of its data, the Hurakán system generates possible information within a data window of up to 15 days for 50 different predictors (if possible). This means that for each possible meteor, from 0 up to 50 different trajectories could be generated, covering up to 15 days from the current date.
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a data window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The implications for the visualization can be difficult to follow. The spaghetti_example figure 2 shows an example of such a visualization.
 
 <img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
-Figuer 2. 20231003 Tropical Cyclone Lidia. Example of the interactive hurricane system map. Given data for a date such as October 1, 2023, the possible future trajectories within the 15-day forecast period are shown. Each trajectory corresponds to a different predictor, which may develop on different dates in the future. Each trajectory shows the storm's speed on a specific date in color.
+Figure 2. 20231003 Tropical Cyclone Lidia. Example of the interactive hurricane system map. Given data for a date, such as October 1, 2023, the possible future trajectories within the 15-day forecast period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a specific date in color.
 
-The implications for the visualization can be difficult to follow. The spaghetti_example figure 2 shows an example of such a visualization.
+
 
 ## Accesing Hurakán
 Suppose the web server platform posts at URL https://hurakan.cicataqro.ipn.mx . In the **address bar** of the web browser write off `https://hurakan.cicataqro.ipn.mx` and press `<enter>`
@@ -134,3 +132,11 @@ Figure 14. 20231015 Tropical Cyclone Norma.
 - Category 4 hurricane (SSHWS)
 - Duration: October 17 – October 23
 - Peak intensity: 130 mph (215 km/h) (1-min); 939 mbar (hPa)  [from Wikipedia](https://en.wikipedia.org/wiki/Hurricane_Norma_(2023))
+
+
+
+## References
+<a id="reference-1">[1]</a> Ferran Alet and Ilan Price and Andrew El-Kadi and Dominic Masters and Stratis Markou and Tom R. Andersson and Jacklynn Stott and Remi Lam and Matthew Willson and Alvaro Sanchez-Gonzalez and Peter W. Battaglia (2025). *Skillful joint probabilistic weather forecasting from marginals*. Nature. [Link to Paper](https://arxiv.org/abs/2506.10772)
+
+
+
