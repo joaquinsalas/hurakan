@@ -21,20 +21,20 @@ Figure 1. The defined regions of interest include Northeastern Pacific (blue) an
 
 
 
-## Requirements
+## Requirements<a name = "requirements"></a>
 To properly visualize the possible trajectories and their cones of uncertainty for the probabilistic atmospheric data, the following are required:
 - A web server with the Hurakán platform (see [Installation Manual](../README.md) ) posting at specific URL.
 - A client web browser with Javascript enabled (Google Chrome 146, Safari 17, Microsoft Edge 145, or Mozilla Firefox 148 are recommended).
 - System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
 
-## Available Information and Context Window
+## Available Information and Context Window<a name = "available"></a>
 Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
 
 <img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
 Figure 2. 20260729 Tropical Cyclone Genevieve. Example of the interactive hurricane system map. Given WeatherNext 2 [[1]](#reference-1) data for a date, such as July 29, 2026, the forecasted trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
 
 
-## Accesing Hurakán
+## Accessing Hurakán<a name = "accessing"></a>
 Suppose the web server platform posts at URL https://hurakan.cicataqro.ipn.mx . In the **address bar** of the web browser write off `https://hurakan.cicataqro.ipn.mx` and press `<enter>`
 
 List of possible URL to access services in Hurakán
@@ -43,7 +43,7 @@ List of possible URL to access services in Hurakán
 - `https://hurakan.cicataqro.ipn.mx/logout` - `logout` window
 - `https://hurakan.cicataqro.ipn.mx/health` - `status` window
 
-## Login and logout <a name = "loginlogout"></a>
+## Login and Logout <a name = "login"></a>
 Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
 When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 3.
 
@@ -57,7 +57,7 @@ When finish using Hurakán, the web browser can be closed or type in the browser
 <img src="../figures/hurakan_logout.png" alt="logout window" />
 Figure 4. Logout window. Upon a succesful logout operation, this window will show up. 
 
-## Activities
+## Activities<a name = "activities"></a>
 In the Hurakán system, given the available information, the following activities can be performed:
 - Select the date of the data to be reviewed
 - For an event occurring in a certain date, the possible trajectories can be displayed using either Spaghetti or Cone of Uncertainty. The former occurs in any event when there is a prediction about a meteor having a certain trajectory. The latter occurs just in certain cases, basically when a cluster and classification analysis determine that an ensemble of trajectories are in a position to describe a tropical storm. Figure 5 illustrates the Spaghetti version. Note that each of the 50 atmospheric scenarios may contain an indetermined number of trajectories.
@@ -84,7 +84,7 @@ Figure 8. The size of the scale in the map is shown in the bottom-left corner, b
 Figure 9. The size of the scale in the map (shown as the horizontal length of the box at the bottom-left corner) can be reduced/increased with the `Zoom in`/`Zoom out` button at the top-right corner with the `+`/`-` sign or the mouse wheel.  
 
 
-## Interface description
+## Interface description<a name = "interface"></a>
 
 <!-- The interface is divided into two main windows:
 
@@ -110,7 +110,7 @@ Figure 11. The Saffir-Simpson scale showns several categories of wind speed with
 - World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
 - There is an "Info" tab that summarizes all the possible identified trajectories.
 
-## Examples of detection and tracking
+## Examples of detection and tracking<a name = "examples"></a>
 
 In this section, several cases are analyzed to demonstrate hurricane capabilities. To identify tropical cyclones, the nomenclature used by NOAA and NHC for the genesis of a tropical cyclone is employed, indicating the year (YYYY), the day of the year (DDD), the hemisphere (N or S), the latitude in degrees (LLL), and the longitude in degrees (HHH); the name assigned to the storm is also used.
 
@@ -133,7 +133,7 @@ Figure 13. 20231003 Tropical Cyclone Lidia.
 
 
 
-## References
+## References<a name = "references"></a>
 <a id="reference-1">[1]</a> Ferran Alet and Ilan Price and Andrew El-Kadi and Dominic Masters and Stratis Markou and Tom R. Andersson and Jacklynn Stott and Remi Lam and Matthew Willson and Alvaro Sanchez-Gonzalez and Peter W. Battaglia (2025). *Skillful joint probabilistic weather forecasting from marginals*. Nature. [Link to Paper](https://arxiv.org/abs/2506.10772)
 
 
