@@ -12,15 +12,15 @@ Figure 1. The defined regions of interest include Northeastern Pacific (blue) an
 
 ## Requirements
 To properly visualize the possible trajectories and their cones of uncertainty for the probabilistic atmospheric data, the following are required:
-- A web server with the Hurakán platform (see [Installation manual](../README.md) ) posting at specific URL
-- A client web browser with Javascript enabled (Google Chrome v146, Safari v17, Microsoft Edge v145, or Mozilla Firefox v148 are recommended)
-- System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout))
+- A web server with the Hurakán platform (see [Installation Manual](../README.md) ) posting at specific URL.
+- A client web browser with Javascript enabled (Google Chrome 146, Safari 17, Microsoft Edge 145, or Mozilla Firefox 148 are recommended).
+- System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
 
 ## Available Information and Context Window
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a data window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The implications for the visualization can be difficult to follow. The spaghetti_example figure 2 shows an example of such a visualization.
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The spaghetti_example Figure 2 shows an example of such a visualization.
 
 <img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
-Figure 2. 20231003 Tropical Cyclone Lidia. Example of the interactive hurricane system map. Given data for a date, such as October 1, 2023, the possible future trajectories within the 15-day forecast period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a specific date in color.
+Figure 2. 20231003 Tropical Cyclone Lidia. Example of the interactive hurricane system map. Given data for a date, such as October 1, 2023, the possible forecasted trajectories within the 15-day forecast period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a specific date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
 
 
 
@@ -34,47 +34,45 @@ List of possible URL to access services in Hurakán
 - `https://hurakan.cicataqro.ipn.mx/health` - `status` window
 
 ## Login and logout <a name = "loginlogout"></a>
-Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each specific person, a user name and password.
-When accesing the initial window or the `login` window, you must input your credentials in each input field, as shown in the next figure:
+Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
+When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 3.
 
 <img src="../figures/hurakan_login.png" alt="login window" />
-Figure 3. Login window
+Figure 3. Login window. Credentials are provided by the system administrator.
 
-and the next window shows the map for the data available and allows interaction with the system.
+After login, the next window will show the map for the data available and will allow interaction with the system.
 
-When finish using Hurakán, the web browser can be closed or type in the address bar `https://hurakan.cicataqro.ipn.mx/logout` . The window shows:
+When finish using Hurakán, the web browser can be closed or type in the browser address bar `https://hurakan.cicataqro.ipn.mx/logout`. A window will pop out and show what is illustred in Figure 4.
 
 <img src="../figures/hurakan_logout.png" alt="logout window" />
-Figure 4. Logout window
+Figure 4. Logout window. Upon a succesful logout operation, this window will show up. 
 
 ## Activities
-In the Hurricane system, given the available information (see get_raw_data), the following activities can be performed:
+In the Hurakán system, given the available information, the following activities can be performed:
 - Select the date of the data to be reviewed
-- Given a date, the possible trajectories will appear, using two formats:
+- For an event occurring in a certain date, the possible trajectories can be displayed using either Spaghetti or Cone of Uncertainty. The former occurs in any event when there is a prediction about a meteor having a certain trajectory. The latter occurs just in certain cases, basically when a cluster and classification analysis determine that an ensemble of trajectories are in a position to describe a tropical storm. Figure 5 illustrates the Spaghetti version. Note that each of the 50 atmospheric scenarios may contain an indetermined number of trajectories.
 
 <img src="../figures/hurakan_spaguetti.png" alt="spaghetti button" />
-Figure 5. The Spaghetti button shows/occults the data group by individual forecast trajectories (from 0 up to 50). Sometimes there aren't data to show, it depends on the metereological data from de day selected.
+Figure 5. The Spaghetti button shows/occults the data group by individual forecast trajectories for the 50 atmospheric scenarios. Sometimes there aren't data to show, it depends on the metereological data from de day selected.
 
-  - Spaghetti: all identified trajectories are shown, indicating the probable speed of the meteor, its probable starting point, and its probable ending point given the specific date. To facilitate visualization, a trajectory can be selected at its ending point, and the date information at that point will be displayed.
+  - Spaghetti: The identified trajectories are shown, indicating the probable speed of the meteor, its probable starting and ending points given the specific date. To facilitate visualization, a trajectory can be selected at its ending point, and the date information at that point will be displayed.
 
 <img src="../figures/hurakan_spaguetti_info.png" alt="spaghetti info" />
 Figure 6. Spaghetti info for each possible trajectory. The info is shown at the initial and ending point of the tarjectory.
 
-  - Date: the cone of uncertainty is displayed.
-
+  - Cone of Uncertainty. Given the trajectories for a timestamp, an area with wide equal to two standard deviations is shown spreading along the forecasted trajectory.
+    
 <img src="../figures/hurakan_trajectory.png" alt="Date possible trajectory and cone of uncertainty" />
 Figure 7. Overall possible trajectory for the date selected. The button(s) with the date(s) can shown a forecast of the trajectory ending in the date displayed.
 
 <img src="../figures/hurakan_scale.png" alt="Scale selected" />
-Figure 8. The size of the scale in the map is shown in the left down corner, below the Saffir-Simpson scale.
+Figure 8. The size of the scale in the map is shown in the bottom-left corner, below the Saffir-Simpson scale.
 
-- Interactive visualization. On the map, the central point can be moved, and zooming in or out can be done within a range of 1000 km to 10 m
+- Interactive visualization. On the map, the central point can be moved by right-clicking on the mouse and dragging the mouse icon around the screen. Simiarly, the view can be zoomed in or out by using either the free-wheel in some mouses or by clicking on the +/-  symbols at the upper-left corner of the screen. Note that the zoom range extends from 10 m to 1000 km. The current scale of the map is given by the horizontal width of the rectangle in the bottom-left corner of th window, just below the Saffir-Simpson Category box. 
 
 <img src="../figures/hurakan_zoomin.png" alt="Button zoom in" />
-Figure 9. The size of the scale in the map can be reduced with the `Zoom in` button at the right top corner with the `+` sign or the mouse wheel.
+Figure 9. The size of the scale in the map (shown as the horizontal length of the box at the bottom-left corner) can be reduced/increased with the `Zoom in`/`Zoom out` button at the top-right corner with the `+`/`-` sign or the mouse wheel.  
 
-<img src="../figures/hurakan_zoomout.png" alt="Button zoom out" />
-Figure 10. The size of the scale in the map can be augmented with the `Zoom out` button at the right top corner with the `-` sign or the mouse wheel.
 
 ## Interface description
 
@@ -99,9 +97,6 @@ Figure 11. The Saffir-Simpson scale showns several categories of wind speed with
 - Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
 - Central panel with buttons. Displays the date of the data used, a Spaghetti button (to show all possible identified trajectories), and date buttons for each possible trajectory that could lead to a tropical cyclone (showing the date of the event, the possible trajectory using the Saffir-Simpson scale colors, the starting and ending points of that trajectory, and information at the ending point).
 
-<img src="../figures/hurakan_territory.png" alt="World map and territory map" />
-Figure 12. The map can be moved and scale to see the territory.
-
 - World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
 - There is an "Info" tab that summarizes all the possible identified trajectories.
 
@@ -125,13 +120,6 @@ Figure 13. 20231003 Tropical Cyclone Lidia.
 - Duration: October 3 – October 11
 - Peak intensity: 140 mph (220 km/h) (1-min); 942 mbar (hPa) [from Wikipedia](https://en.wikipedia.org/wiki/Hurricane_Lidia_(2023))
 
-### Tropical Cyclone Norma
-<img src="../figures/norma_app.PNG" alt="20231015 Tropical Cyclone Lidia" />
-Figure 14. 20231015 Tropical Cyclone Norma.
-
-- Category 4 hurricane (SSHWS)
-- Duration: October 17 – October 23
-- Peak intensity: 130 mph (215 km/h) (1-min); 939 mbar (hPa)  [from Wikipedia](https://en.wikipedia.org/wiki/Hurricane_Norma_(2023))
 
 
 
