@@ -17,11 +17,10 @@ To properly visualize the possible trajectories and their cones of uncertainty f
 - System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
 
 ## Available Information and Context Window
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The spaghetti_example Figure 2 shows an example of such a visualization.
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
 
 <img src="../figures/lidia_app.PNG" alt="20231001 Tropical Cyclone Lidia" />
-Figure 2. 20231003 Tropical Cyclone Lidia. Example of the interactive hurricane system map. Given data for a date, such as October 1, 2023, the possible forecasted trajectories within the 15-day forecast period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a specific date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
-
+Figure 2. 20260729 Tropical Cyclone Genevieve. Example of the interactive hurricane system map. Given WeatherNext 2 [[1]](#reference-1) data for a date, such as July 29, 2026, the forecasted trajectories for an up to 15-day period are shown. Each trajectory corresponds to the forecasted evolution of a different atmospheric scenario. Each trajectory shows the storm's speed on a given  date in color, corresponding to the Saffir-Simpson Hurricane Wind Scale on the legend box in the bottom-left.
 
 
 ## Accesing Hurakán
