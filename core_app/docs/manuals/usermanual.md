@@ -44,10 +44,9 @@ After login, the next window will show the map for the data available and will a
 When finish using Hurakán, the web browser can be closed or type in the browser address bar `https://hurakan.cicataqro.ipn.mx/logout`. A window will pop out and show what is illustred in Figure 2(b).
 
 
-| :---: | :---: |
 |  *(a) Login screen* |  *(b) Logout screen* |
+| :---: | :---: |
 | <img src="../figures/02hurakan_login_2.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout_2.png" alt="Hurakán logout screen" width="420"> |
-
 
 Figure 2. Login/Logout window. Credentials are provided by the system administrator.
 
