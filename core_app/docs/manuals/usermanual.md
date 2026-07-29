@@ -12,7 +12,7 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 - [TODO](#ToDo)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
-- 
+  
 
 <img src="../figures/ROI.PNG"  alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
 Figure 1. The defined regions of interest include Northeastern Pacific (blue) and the North Atlantic (green) basins.  
