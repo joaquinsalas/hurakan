@@ -6,9 +6,9 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 ## Table of Contents
 - [Requirements](#requirements)
 - [Accessing Hurakán](#accessing)
+- [Interface Description](#interface)
 - [Available Information and Context Window](#available)
 - [Activities](#activities)
-- [Interface Description](#interface)
 - [Examples of Forecasting](#examples)
 - [References](#references)
   
@@ -52,6 +52,33 @@ When finish using Hurakán, the web browser can be closed or type in the browser
 Figure 4. Logout window. Upon a succesful logout operation, this window will show up. 
 
 
+## Interface description<a name = "interface"></a>
+
+<!-- The interface is divided into two main windows:
+
+- Left side window or "selector". Here you can specify the date of the atmospheric data to be used (with possible predictions up to 15 days later, if supported by the data).
+
+- Right-hand side window or "map". A world map is displayed showing the possible meteors that support the selected meteorological data.
+
+### Selector Window
+-->
+
+A world map is displayed showing the possible meteors that support the selected meteorological data.
+
+### Map Window
+
+Map Window Elements:
+
+<img src="../figures/hurakan_scale.png" alt="Scale selected" />
+Figure 11. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
+
+- Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
+- Central panel with buttons. Displays the date of the data used, a Spaghetti button (to show all possible identified trajectories), and date buttons for each possible trajectory that could lead to a tropical cyclone (showing the date of the event, the possible trajectory using the Saffir-Simpson scale colors, the starting and ending points of that trajectory, and information at the ending point).
+
+- World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
+- There is an "Info" tab that summarizes all the possible identified trajectories.
+- 
+
 ## Available Information and Context Window<a name = "available"></a>
 Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios with a lead time of 6 hours. The Spaghetti drawing in Figure 2 shows an example of such a visualization for Genevieve, a tropical storm formed on July 24, 2026, and still active as a hurricane by July 29. 
 
@@ -87,31 +114,7 @@ Figure 8. The size of the scale in the map is shown in the bottom-left corner, b
 Figure 9. The size of the scale in the map (shown as the horizontal length of the box at the bottom-left corner) can be reduced/increased with the `Zoom in`/`Zoom out` button at the top-right corner with the `+`/`-` sign or the mouse wheel.  
 
 
-## Interface description<a name = "interface"></a>
 
-<!-- The interface is divided into two main windows:
-
-- Left side window or "selector". Here you can specify the date of the atmospheric data to be used (with possible predictions up to 15 days later, if supported by the data).
-
-- Right-hand side window or "map". A world map is displayed showing the possible meteors that support the selected meteorological data.
-
-### Selector Window
--->
-
-A world map is displayed showing the possible meteors that support the selected meteorological data.
-
-### Map Window
-
-Map Window Elements:
-
-<img src="../figures/hurakan_scale.png" alt="Scale selected" />
-Figure 11. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
-
-- Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
-- Central panel with buttons. Displays the date of the data used, a Spaghetti button (to show all possible identified trajectories), and date buttons for each possible trajectory that could lead to a tropical cyclone (showing the date of the event, the possible trajectory using the Saffir-Simpson scale colors, the starting and ending points of that trajectory, and information at the ending point).
-
-- World Map. It identifies the global position of trajectories, with a resolution of 10m to 1000km, allowing for precise trajectory tracking. The map center can be moved, and from there, zoom in (up to 10m) or zoom out (up to 1000km).
-- There is an "Info" tab that summarizes all the possible identified trajectories.
 
 ## Examples of detection and tracking<a name = "examples"></a>
 
