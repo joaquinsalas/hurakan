@@ -4,14 +4,14 @@
 The Hurakán system facilitates the detection, monitoring, and forecasting of tropical cyclones through the visualization and analysis of potential meteorological phenomena, using detailed current information about variables such as temperature, pressure, humidity, and wind conditions in basins of interest and their temporal predicted evolution. The main objective is to increase awarness about potential tropical cyclones that could affect living conditions in coastal areas. The information entered into the system consists of meteorological forecasted information of the basins of interest at a certain resolution (0.25 degrees) obtained from the Google Earth Engine collection WeatherNext 2 [[1]](#reference-1), which is updated every six hours. This information is available year-round, so it can be used any day of the year. In the present version of the Hurakán system, the basins of interest include the Northeastern Pacific and the North Atlantic, both close to the coastal areas of Mexico in the Pacific and Atlantic Oceans, as shown in  Figure 1. Historically, hurrican season runs between May 15 and November 30 for the former and from June 1 to November 30 for the latter, with the highest incidence between August and September.
 
 ## Table of Contents
-- [About](#about)
-- [Licensing](#licensing)
-- [Getting Started](#getting_started)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [TODO](#ToDo)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
+- [Requirements](#requirements)
+- [Available Information and Context Window](#available)
+- [Accessing Hurakán](#accessing)
+- [Login and Logout](#login)
+- [Activities](#activities)
+- [Interface Description](#interface)
+- [Examples of Forecasting](#examples)
+- [References](#references)
   
 
 <img src="../figures/ROI.PNG"  alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
