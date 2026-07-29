@@ -13,7 +13,7 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 - [References](#references)
   
 
-<img src="../figures/ROI.PNG"  alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
+<img src="../figures/01ROI.PNG"  alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
 Figure 1. The defined regions of interest include Northeastern Pacific (blue) and the North Atlantic (green) basins.  
 
 
@@ -24,7 +24,7 @@ Figure 1. The defined regions of interest include Northeastern Pacific (blue) an
 To properly visualize the possible trajectories and their cones of uncertainty for the probabilistic atmospheric data, the following are required:
 - A web server with the Hurakán platform (see [Installation Manual](../README.md) ) posting at specific URL.
 - A client web browser with Javascript enabled (Google Chrome 146, Safari 17, Microsoft Edge 145, or Mozilla Firefox 148 are recommended).
-- System access credentials (the Hurakán system administrator can provide these credentials; see [Login and logout](#loginlogout)).
+- System access credentials (the Hurakán system administrator can provide these credentials; see [Accessing Hurakán](#accessing)).
 
 
 
@@ -41,14 +41,22 @@ List of possible URL to access services in Hurakán
 Hurakán mantains controlled access because of the metereological information and their possible consecuences. The adminstrator must give, for each person, a user name and password.
 When accesing the initial window or the `login` window, the person must input their credentials in each input field, as shown in the Figure 2.
 
-<img src="../figures/hurakan_login.png" alt="login window" />
+
+
+| Figure 1 | Figure 2 |
+| :---: | :---: |
+| <img src="../figures/02hurakan_login.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout.png" alt="Hurakán logout screen" width="420"> |
+| *Login screen* | *Logout screen* |
+
+
+<img src="../figures/02hurakan_login.png" alt="login window" />
 Figure 2. Login window. Credentials are provided by the system administrator.
 
 After login, the next window will show the map for the data available and will allow interaction with the system.
 
 When finish using Hurakán, the web browser can be closed or type in the browser address bar `https://hurakan.cicataqro.ipn.mx/logout`. A window will pop out and show what is illustred in Figure 3.
 
-<img src="../figures/hurakan_logout.png" alt="logout window" />
+<img src="../figures/03hurakan_logout.png" alt="logout window" />
 Figure 3. Logout window. Upon a succesful logout operation, this window will show up. 
 
 
@@ -69,7 +77,7 @@ A world map is displayed showing the possible meteors that support the selected 
 
 Map Window Elements:
 
-<img src="../figures/hurakan_scale.png" alt="Scale selected" />
+<img src="../figures/04windos_elements.png" alt="Scale selected" />
 Figure 4. The Saffir-Simpson scale showns several categories of wind speed with a key and color.
 
 - Saffir-Simpson Category Speed ​​Scale. Displays meteor speeds using colors.
