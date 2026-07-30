@@ -55,13 +55,11 @@ Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system
 - **Saffir-Simpson Category Box.**
   <img src="../figures/saffir_simpson_icon.png"
        alt="Saffir-Simpson Category Box"
-       width="100">
+       width="70">
        It displays the colors associated with different wind speeds. Each color distinguishes among *DT* (TD, tropical depression), *TT* (TS, tropical storm), and *Ci* (hurricane Categories 1 through 5), and provides the corresponding wind speed ranges in km/h.
 - **Map Scale.** <img src="../figures/scale_icon.png"
        alt="Saffir-Simpson Category Box"
        width="60">The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
-
-- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
 - **Region of Interest (ROI) Outline.** The ROI boundaries are faintly outlined on the maps. Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
 
 <img src="../figures/06hurakan_mean_trajectory.png" alt="Scale selected" />
@@ -79,6 +77,7 @@ In the Hurakán system, the following activities can be performed using the avai
   The *Spaghetti* button toggles between the individual ensemble trajectories and the most probable overall trajectory for a system classified as a tropical storm or stronger. Date buttons are provided for each trajectory cluster considered mature enough for this classification.
   By default, the spaghetti trajectories are displayed. Each track shows the forecast wind speed using the Saffir-Simpson colors, together with its probable starting and ending points for the selected date. The starting point is green, and the ending point is dark gray and can be selected to display additional information. This view is available only when the cluster and classification analyses identify an ensemble capable of describing a tropical storm or stronger.
   Each of the 50 atmospheric scenarios may contain an undetermined number of trajectories. Wind speeds represent averages over 0.25-degree cells and may therefore be lower than the strongest observed gusts.
+- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
 - **Zoom Controls.** <img src="../figures/zoom_icon.png"
        alt="Saffir-Simpson Category Box"
        width="30">The map view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km.
