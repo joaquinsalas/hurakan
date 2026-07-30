@@ -101,12 +101,12 @@ In the Hurakán system, the following activities can be performed using the avai
 
 <img src="../figures/07starting_point.png" alt="Scale selected" />
 
-Figure 6. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
+Figure 6. Trajectories end-point dates. Clicking on trajectories end-points will result in a pop-out window displaying UTC date and time.
 
 
 <img src="../figures/velocity_intra_trajectory.png" alt="Scale selected" />
 
-Figure 7. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
+Figure 7. Intra-trajectory information. As they forecast the trajectory of tropical cyclones, clicking along the trajectory will generate relevant information about the tropical cyclone at that point in space-time.
 
 
 ## Examples of Detection and Tracking<a name="examples"></a>
