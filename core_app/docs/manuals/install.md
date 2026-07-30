@@ -202,13 +202,7 @@ for mobile-friendly interactive maps
 - Incorporation of real-time measurements (e.g., wind data from CYGNSS) to refine the representation of cyclonic intensity
 
 ## Authors <a name = "authors"></a>
-- [@NathalieAlvarez](https://github.com/NathalieAlvarez) - data download, clustering, classifiers
-- [@robertorojas11](https://github.com/robertorojas11) - trajectories, performance, systems engineering
-- [@LuisManuelOrtiz](https://github.com/LuisManuelOrtiz) -
-- [@YaelHuerta1](https://github.com/YaelHuerta1) - clustering, interfase, systems engineering
-- [@joaquinsalas](https://github.com/joaquinsalas) - idea, algorithms, QA
-
-See also the list of [contributors](https://github.com/joaquinsalas/graphs/contributors) who participated in this project.
+The project has benefited by the participation of the following [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md).
 
 ## Acknowledgements <a name = "acknowledgement"></a>
 We downloaded GenCast and FGN historical forecasts of meteorological variables from the Google Earth Engine WeatherNext Gen Forecasts and WeatherNext 2 data catalogs
