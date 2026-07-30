@@ -7,6 +7,7 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 - [Accessing Hurakán](#accessing)
 - [Interface Description](#interface)
 - [Examples of Forecasting](#examples)
+- [Authors](#authors)
 - [References](#references)
 
 <img src="../figures/01ROI.PNG" alt="The two basins of interest: the Eastern Pacific and the North Atlantic"/>
@@ -125,6 +126,9 @@ Figure 9. 20231003 Tropical Cyclone Lidia.
 - Category 4 hurricane (SSHWS)
 - Duration: October 3–October 11
 - Peak intensity: 140 mph (220 km/h) (1-min); 942 mbar (hPa) [from Wikipedia](https://en.wikipedia.org/wiki/Hurricane_Lidia_(2023))
+
+## Authors <a name = "authors"></a>
+The project has benefited by the participation of the following [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md).
 
 ## References<a name="references"></a>
 
