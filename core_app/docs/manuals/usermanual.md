@@ -52,13 +52,30 @@ Given the probabilistic nature of its data, the Hurakán system generates possib
 Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system map. Given WeatherNext 2 atmospheric forecast scenarios for a date such as July 29, 2026, estimated trajectories for a period of up to 15 days are shown. Each trajectory corresponds to the forecast evolution of a different atmospheric scenario. The color of each trajectory indicates the storm's wind speed on a given date according to the Saffir-Simpson Hurricane Wind Scale shown in the legend box at the bottom-left.
 
 - **World Map.** It shows the geographic position of the trajectories, with a scale ranging from 10 m to 1000 km, allowing precise trajectory tracking. The map center can be moved, and the view can be zoomed in to 10 m or out to 1000 km.
-- **Saffir-Simpson Category Box.** It displays the colors associated with different wind speeds. Each color distinguishes among *DT* (TD, tropical depression), *TT* (TS, tropical storm), and *Ci* (hurricane Categories 1 through 5), and provides the corresponding wind speed ranges in km/h.
-- **Central Panel.** This panel shows the trajectories currently being extracted from the atmospheric scenarios and the corresponding time in Coordinated Universal Time (UTC). Central Mexico uses UTC-6 and does not change clocks in spring or autumn. The panel also includes a *Spaghetti* button, which toggles between the identified trajectories and the most probable overall trajectory for a tropical cyclone classified as a tropical storm or stronger. In addition, it includes date buttons for each possible trajectory cluster considered mature enough to be classified as a tropical storm or stronger. The trajectories show the forecast Saffir-Simpson colors, their starting and ending points, and information at the ending point. Note that wind speeds correspond to averages over cells with a resolution of 0.25 degrees. Therefore, the wind speed may be a conservative estimate relative to the strongest wind gust that may be observed.
-- **Zoom Controls.** The map view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km.
-- **Centering Button.** When clicked, this icon centers the map on Mexico at a 300 km scale.
-- **Map Scale.** The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
-- **Spaghetti Panel.** The identified trajectories are shown with the probable wind speed along each one, together with their probable starting and ending points for the selected date (see Figure 4). To facilitate visualization, a trajectory can be selected at its ending point; the starting point is green, and the ending point is dark gray. For an event occurring on a specific date, the possible trajectories can be displayed or hidden using the *Spaghetti* button. By default, the spaghetti trajectories are shown. This view is available only in certain cases, primarily when cluster and classification analyses determine that an ensemble of trajectories is capable of describing a tropical storm. Note that each of the 50 atmospheric scenarios may contain an undetermined number of trajectories.
-- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed. This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
+- **Saffir-Simpson Category Box.**
+  <img src="../figures/saffir_simpson_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="100">
+       It displays the colors associated with different wind speeds. Each color distinguishes among *DT* (TD, tropical depression), *TT* (TS, tropical storm), and *Ci* (hurricane Categories 1 through 5), and provides the corresponding wind speed ranges in km/h.
+- **Central Panel.**
+  <img src="../figures/spaghetti_icon.png"
+       alt="Central and Spaghetti Panel"
+       width="100">
+  This panel shows the trajectories extracted from the atmospheric scenarios and the corresponding time in Coordinated Universal Time (UTC). Central Mexico uses UTC-6 and does not change clocks in spring or autumn.
+  The *Spaghetti* button toggles between the individual ensemble trajectories and the most probable overall trajectory for a system classified as a tropical storm or stronger. Date buttons are provided for each trajectory cluster considered mature enough for this classification.
+  By default, the spaghetti trajectories are displayed. Each track shows the forecast wind speed using the Saffir-Simpson colors, together with its probable starting and ending points for the selected date. The starting point is green, and the ending point is dark gray and can be selected to display additional information. This view is available only when the cluster and classification analyses identify an ensemble capable of describing a tropical storm or stronger.
+  Each of the 50 atmospheric scenarios may contain an undetermined number of trajectories. Wind speeds represent averages over 0.25-degree cells and may therefore be lower than the strongest observed gusts.
+- **Zoom Controls.** <img src="../figures/zoom_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="30">The map view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km.
+- **Centering Button.** <img src="../figures/centering_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="30">When clicked, this icon centers the map on Mexico at a 300 km scale.
+- **Map Scale.** <img src="../figures/scale_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="60">The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
+
+- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
 - **Region of Interest (ROI) Outline.** The ROI boundaries are faintly outlined on the maps. Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
 
 <img src="../figures/06hurakan_mean_trajectory.png" alt="Scale selected" />
@@ -68,11 +85,17 @@ Figure 5. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved 
 ## Activities<a name="activities"></a>
 
 In the Hurakán system, the following activities can be performed using the available information:
-- **Date Selection.** If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
+- **Date Selection.**<img src="../figures/spaghetti_icon.png"
+       alt="Central and Spaghetti Panel"
+       width="100"> If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
 - **Initial and Final Dates.** For a trajectory, the user can click its endpoints to display its probable starting or ending date.
 - **Interactive Visualization.** The map center can be moved by right-clicking and dragging the mouse.
-- **Zooming In/Out.** The view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km. The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
-- **View Centering.** When clicked, the symbol below the `+` and `-` controls at the upper-left corner centers the map on Mexico at a 300 km scale.
+- **Zooming In/Out.**<img src="../figures/zoom_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="30"> The view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km. The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
+- **View Centering.**<img src="../figures/centering_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="30"> When clicked, the symbol below the `+` and `-` controls at the upper-left corner centers the map on Mexico at a 300 km scale.
 
 ## Examples of Detection and Tracking<a name="examples"></a>
 
