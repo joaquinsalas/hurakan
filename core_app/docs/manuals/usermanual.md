@@ -1,6 +1,6 @@
 # System User's Manual
 
-The Hurakán system facilitates the detection, monitoring, and forecasting of tropical cyclones through the visualization and analysis of potential meteorological phenomena. It provides detailed current and forecast information on variables such as temperature, pressure, humidity, and wind conditions in the basins of interest, together with their predicted evolution over time. The main objective is to increase awareness of potential tropical cyclones that could affect living conditions in coastal areas. The system uses meteorological forecast information for the basins of interest at a resolution of 0.25 degrees, obtained from the Google Earth Engine WeatherNext 2 collection [[1]](#reference-1), which is updated every six hours. This information is available year-round, so the system can be used on any day of the year. In the current version of Hurakán, the basins of interest include the Northeastern Pacific and the North Atlantic, both near Mexico's Pacific and Atlantic coastal areas, as shown in Figure 1. Historically, hurricane season runs from May 15 to November 30 in the former and from June 1 to November 30 in the latter, with the highest incidence between August and September.
+The Hurakán system facilitates the detection, monitoring, and forecasting of tropical cyclones through the visualization and analysis of potential meteorological phenomena. It provides detailed current and forecast information on variables such as temperature, pressure, humidity, and wind conditions in the basins of interest, together with their predicted evolution over time. The main objective is to increase awareness of potential tropical cyclones that could affect living conditions in coastal areas. The system uses meteorological forecast information for the basins of interest at a resolution of 0.25 degrees, obtained from the Google Earth Engine WeatherNext 2 collection [[1]](#reference-1), which is updated every six hours. This information is available year-round, so that the system can be used on any day of the year. In the current version of Hurakán, the basins of interest include the Northeastern Pacific and the North Atlantic, both near Mexico's Pacific and Atlantic coastal areas, as shown in Figure 1. Historically, hurricane season runs from May 15 to November 30 in the former and from June 1 to November 30 in the latter, with the highest incidence between August and September.
 
 ## Table of Contents
 - [Requirements](#requirements)
@@ -33,7 +33,7 @@ List of URLs for accessing Hurakán services:
 
 Hurakán maintains controlled access because of the meteorological information it provides and its possible consequences. The administrator must provide each user with a username and password.
 
-When accessing the initial window or the `login` window, the user must enter their credentials in the corresponding input fields, as shown in Figure 2(a). After login, the next window displays the map with the available data and allows interaction with the system.
+When accessing the initial window or the `login` window, the user must enter their credentials in the corresponding input fields, as shown in Figure 2(a). After logging in, the next window displays the map with the available data and allows interaction with the system.
 
 When finished using Hurakán, the user can close the web browser or enter `https://hurakan.cicataqro.ipn.mx/logout` in the browser's address bar. A window will appear, as illustrated in Figure 2(b).
 
@@ -41,15 +41,15 @@ When finished using Hurakán, the user can close the web browser or enter `https
 | :---: | :---: |
 | <img src="../figures/02hurakan_login_2.png" alt="Hurakán login screen" width="420"> | <img src="../figures/03hurakan_logout_2.png" alt="Hurakán logout screen" width="420"> |
 
-Figure 2. Login/logout window. Credentials are provided by the system administrator.
+Figure 2. Login/logout window. The system administrator provides credentials.
 
 ## Interface Description<a name="interface"></a>
 
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for as many as 50 different atmospheric scenarios, with a lead-time interval of 6 hours. The spaghetti plot in Figure 4 shows an example of this visualization for Genevieve, a tropical storm that formed on July 24, 2026, and was still active as a hurricane on July 29. The interface includes the elements shown in Figure 4.
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios, with a lead-time interval of 6 hours. The spaghetti plot in Figure 4 shows an example of this visualization for Genevieve, a tropical storm that formed on July 24, 2026, and was still active as a hurricane on July 29. The interface includes the elements shown in Figure 4.
 
 <img src="../figures/04window_elements.png" alt="Scale selected" />
 
-Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system map. Given WeatherNext 2 atmospheric forecast scenarios for a date such as July 29, 2026, estimated trajectories for a period of up to 15 days are shown. Each trajectory corresponds to the forecast evolution of a different atmospheric scenario. The color of each trajectory indicates the storm's wind speed on a given date according to the Saffir-Simpson Hurricane Wind Scale shown in the legend box at the bottom-left.
+Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system map. For a date such as July 29, 2026, estimated trajectories for up to 15 days are shown for two WeatherNext 2 atmospheric forecast scenarios. Each trajectory corresponds to the forecast evolution of a different atmospheric scenario. The color of each trajectory indicates the storm's wind speed on a given date according to the Saffir-Simpson Hurricane Wind Scale shown in the legend box at the bottom-left.
 
 - **World Map.** It shows the geographic position of the trajectories, with a scale ranging from 10 m to 1000 km, allowing precise trajectory tracking. The map center can be moved, and the view can be zoomed in to 10 m or out to 1000 km.
 - **Saffir-Simpson Category Box.**
@@ -101,7 +101,7 @@ In the Hurakán system, the following activities can be performed using the avai
 
 <img src="../figures/07starting_point.png" alt="Scale selected" />
 
-Figure 6. Trajectories end-point dates. Clicking on trajectories end-points will result in a pop-out window displaying UTC date and time.
+Figure 6. Trajectories end-point dates. Clicking on trajectory end-points will result in a pop-out window displaying UTC date and time.
 
 
 <img src="../figures/velocity_intra_trajectory.png" alt="Scale selected" />
@@ -134,7 +134,3 @@ Figure 9. 20231003 Tropical Cyclone Lidia.
 ## References<a name="references"></a>
 
 <a id="reference-1">[1]</a> Ferran Alet, Ilan Price, Andrew El-Kadi, Dominic Masters, Stratis Markou, Tom R. Andersson, Jacklynn Stott, Remi Lam, Matthew Willson, Alvaro Sanchez-Gonzalez, and Peter W. Battaglia (2025). *Skillful joint probabilistic weather forecasting from marginals*. Nature. [Link to Paper](https://arxiv.org/abs/2506.10772)
-
-
-
-
