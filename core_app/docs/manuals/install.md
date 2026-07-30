@@ -5,7 +5,7 @@
 - [Getting Started](#getting_started)
 - [Deployment](#deployment)
 - [Usage](#usage)
-- [Built Using](#built_using)
+- [Software Tools Employed](#built_using)
 - [TODO](../TODO.md)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
@@ -188,7 +188,7 @@ To stop the running services and remove the containers, networks and images defi
 docker compose down
 ```````````````````````````````````````````````````````````````````````````````````
 
-## Built Using <a name = "built_using"></a>
+## Software Tools Employed <a name = "built_using"></a>
 - [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
 - [Docker](https://docker.com/) - A safer container ecosystem
 - [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) - Collection of detection and characterization algorithms for large climate datasets
