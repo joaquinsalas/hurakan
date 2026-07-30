@@ -7,6 +7,7 @@
 - [Usage](#usage)
 - [Software Tools Employed](#built_using)
 - [TODO](../TODO.md)
+- [acronyms](#acronyms)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
@@ -229,43 +230,66 @@ sudo systemctl disable download_weather.service
 
 ## Usage <a name = "usage"></a>
 
-To use the application from a client machine, open `http://<server-address>:8081` in a web browser.
+To access the application from a client machine, open `http://<server-address>:8081` in a web browser.
 
-If the browser is running on the server itself, use `http://127.0.0.1:8081`.
+If the browser is running on the server itself, open `http://127.0.0.1:8081`.
 
-For detailed information, see the [User Manual](./usermanual.md).
+For detailed instructions, see the [User Manual](./usermanual.md).
+
 
 
 
 ## Deployment <a name = "deployment"></a>
+
 As mentioned, you can build the Docker image on Windows, macOS, or GNU/Linux. However, the container should run on the same operating system and version used to build the image—for example, build it on Windows 11 and run it on Windows 11.
 
-To run the Docker container:
-```````````````````````````````````````````````````````````````````````````````````
+To start the Docker containers:
+
+```bash
 docker compose up
-```````````````````````````````````````````````````````````````````````````````````
+```
 
-To stop the running services and remove the containers, networks and images defined in the file:
-```````````````````````````````````````````````````````````````````````````````````
+To stop the running services and remove the containers, networks, and images defined in the Compose file:
+
+```bash
 docker compose down
-```````````````````````````````````````````````````````````````````````````````````
-
+```
 
 
 
 
 ## Software Tools Employed <a name = "built_using"></a>
-- [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
-- [Docker](https://docker.com/) - A safer container ecosystem
-- [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) - Collection of detection and characterization algorithms for large climate datasets
-- [OpenStreetMap](https://www.openstreetmap.org/) - Map of the world
-- [Leaflet](https://leafletjs.com/) - An open-source JavaScript library
-for mobile-friendly interactive maps
-- [CARTO](https://catro.com/) - The Agentic GIS Platform
+
+* [Flask](https://flask.palletsprojects.com/) — A lightweight WSGI web application framework
+* [Docker](https://docker.com/) — A secure container ecosystem
+* [TempestExtremes](https://climate.ucdavis.edu/tempestextremes.php) — A collection of algorithms for detecting and characterizing features in large climate datasets
+* [OpenStreetMap](https://www.openstreetmap.org/) — A collaborative map of the world
+* [Leaflet](https://leafletjs.com/) — An open-source JavaScript library for mobile-friendly interactive maps
+* [CARTO](https://carto.com/) — An agentic GIS platform
+
+
 
 ## ToDo <a name = "todo"></a>
-- Add tests after the installation to ensure correct functionality
-- Incorporation of real-time measurements (e.g., wind data from CYGNSS) to refine the representation of cyclonic intensity
+* Add post-installation tests to ensure proper functionality.
+* Incorporate real-time measurements, such as CYGNSS wind data, to improve the representation of tropical cyclone intensity.
+
+
+
+## Acronyms<a name = "acronyms"></a>
+
+- **API** — Application Programming Interface: a set of rules that allows software components to communicate.
+- **CYGNSS** — Cyclone Global Navigation Satellite System: a satellite constellation that measures ocean-surface winds and other Earth-surface properties.
+- **FGN** — Functional Generative Network: the data-driven weather model used to produce WeatherNext 2 forecasts.
+- **GIS** — Geographic Information System: a system for storing, analyzing, and displaying geospatial information.
+- **GNU** — GNU's Not Unix: a free and open-source operating system and software project. In `GNU/Linux`, GNU software is combined with the Linux kernel.
+- **HTTP** — Hypertext Transfer Protocol: the protocol used to transfer web content between servers and clients.
+- **JSON** — JavaScript Object Notation: a text format used to store and exchange structured data.
+- **NetCDF** — Network Common Data Form: a file format commonly used to store multidimensional scientific data.
+- **PIN** — Personal Identification Number: a numeric code used for identification or access. In the installation output, it refers to the Flask debugger PIN.
+- **ROI** — Region of Interest: a geographic area selected for data processing and analysis. The plural form is **ROIs**.
+- **TC** — Tropical Cyclone: a rotating, organized storm system that forms over tropical or subtropical waters. The plural form is **TCs**.
+- **WSGI** — Web Server Gateway Interface: a standard interface between Python web applications and web servers.
+- 
 
 ## Authors <a name = "authors"></a>
 The project has benefited by the participation of the following [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md).
