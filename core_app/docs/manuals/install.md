@@ -37,6 +37,12 @@ Hurakán also requires atmospheric data for a specific date, such as the current
 
 ### 1. Clone the repository
 
+``````````````````````````````````````````````````````````````````````````````````
+git clone https://github.com/joaquinsalas/hurakan
+cd hurakan
+```````````````````````````````````````````````````````````````````````````````````
+
+
 ```bash
 git clone https://github.com/joaquinsalas/hurakan
 cd hurakan
