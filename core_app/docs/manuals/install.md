@@ -37,12 +37,6 @@ Hurakán also requires atmospheric data for a specific date, such as the current
 
 #### 1. Clone the repository
 
-``````````````````````````````````````````````````````````````````````````````````
-git clone https://github.com/joaquinsalas/hurakan
-cd hurakan
-```````````````````````````````````````````````````````````````````````````````````
-
-
 ```bash
 git clone https://github.com/joaquinsalas/hurakan
 cd hurakan
@@ -59,7 +53,7 @@ python3 -m venv .venv
 > [!NOTE]
 > `python3` must execute Python 3.11 or later on the host system.
 
-### 3. Activate the virtual environment
+#### 3. Activate the virtual environment
 
 **Windows:**
 
@@ -79,7 +73,7 @@ After activation, the command prompt will include the virtual environment name i
 (.venv) hurakan$
 ```
 
-### 4. Copy the required environment-variable file
+#### 4. Copy the required environment-variable file
 
 **Windows:**
 
@@ -102,7 +96,7 @@ Install `python-dotenv`:
 (.venv) hurakan$ pip install python-dotenv
 ```
 
-### 5. Create the required directory structure
+#### 5. Create the required directory structure
 
 ```bash
 (.venv) hurakan$ python services/utils/init_folders.py
@@ -111,7 +105,7 @@ Install `python-dotenv`:
 > [!NOTE]
 > Inside the `.venv` virtual environment, `python` executes Python 3.11 or later.
 
-### 6. Build the Docker images and start the services
+#### 6. Build the Docker images and start the services
 
 ```bash
 (.venv) hurakan$ docker compose up --build
@@ -149,32 +143,32 @@ classifier-1  | INFO:     Uvicorn running on http://0.0.0.0:8082 (Press CTRL+C t
 ...
 ```
 
-### 7. Install the requirements for `core_app`
+#### 7. Install the requirements for `core_app`
 
 ```bash
 (.venv) hurakan$ cd core_app
 (.venv) hurakan/core_app$ pip install -r requirements.txt
 ```
 
-### 8. Create authorized Hurakán users
+#### 8. Create authorized Hurakán users
 
 ```bash
 (.venv) hurakan/core_app$ python create_users.py
 ```
 
-### 9. Install the data-download requirements
+#### 9. Install the data-download requirements
 
 ```bash
 (.venv) hurakan/core_app$ cd ..
 (.venv) hurakan$ pip install -r librerias_download.txt
 ```
 
-### 10. Generate Google Drive API credentials
+#### 10. Generate Google Drive API credentials
 
 > [!NOTE]
 > Obtain both the token and credentials files in JSON format to access the Google Drive API.
 
-### 11. Configure the required directories in the `.env` file
+#### 11. Configure the required directories in the `.env` file
 
 Open the `.env` file with a text editor:
 
@@ -185,7 +179,7 @@ Open the `.env` file with a text editor:
 > [!NOTE]
 > Update the `TOKEN_FILE` and `CREDENTIALS_FILE` variables to provide access to the Google Drive API. Also update `DATA_RAW_DIR` to specify the directory where the atmospheric data will be downloaded.
 
-### 12. Run the data downloader
+#### 12. Run the data downloader
 
 Run it as a shell script:
 
