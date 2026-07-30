@@ -6,7 +6,6 @@ The Hurakán system facilitates the detection, monitoring, and forecasting of tr
 - [Requirements](#requirements)
 - [Accessing Hurakán](#accessing)
 - [Interface Description](#interface)
-- [Activities](#activities)
 - [Examples of Forecasting](#examples)
 - [References](#references)
 
@@ -45,18 +44,33 @@ Figure 2. Login/logout window. The system administrator provides credentials.
 
 ## Interface Description<a name="interface"></a>
 
-Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios, with a lead-time interval of 6 hours. The spaghetti plot in Figure 4 shows an example of this visualization for Genevieve, a tropical storm that formed on July 24, 2026, and was still active as a hurricane on July 29. The interface includes the elements shown in Figure 4.
+Given the probabilistic nature of its data, the Hurakán system generates possible tropical cyclone trajectories within a time window of up to 15 days for up to 50 different atmospheric scenarios, with a lead-time interval of 6 hours. The spaghetti plot in Figure 4 shows an example of this visualization for Genevieve, a tropical storm that formed on July 24, 2026, and was still active as a hurricane on July 29. The interface includes the passive and active elements shown in Figure 4.
 
-<img src="../figures/04window_elements.png" alt="Scale selected" />
+<img src="../figures/04window_elements2.png" alt="Scale selected" />
 
 Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system map. For a date such as July 29, 2026, estimated trajectories for up to 15 days are shown for two WeatherNext 2 atmospheric forecast scenarios. Each trajectory corresponds to the forecast evolution of a different atmospheric scenario. The color of each trajectory indicates the storm's wind speed on a given date according to the Saffir-Simpson Hurricane Wind Scale shown in the legend box at the bottom-left.
 
+### Passive Components
 - **World Map.** It shows the geographic position of the trajectories, with a scale ranging from 10 m to 1000 km, allowing precise trajectory tracking. The map center can be moved, and the view can be zoomed in to 10 m or out to 1000 km.
 - **Saffir-Simpson Category Box.**
   <img src="../figures/saffir_simpson_icon.png"
        alt="Saffir-Simpson Category Box"
        width="100">
        It displays the colors associated with different wind speeds. Each color distinguishes among *DT* (TD, tropical depression), *TT* (TS, tropical storm), and *Ci* (hurricane Categories 1 through 5), and provides the corresponding wind speed ranges in km/h.
+- **Map Scale.** <img src="../figures/scale_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="60">The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
+
+- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
+- **Region of Interest (ROI) Outline.** The ROI boundaries are faintly outlined on the maps. Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
+
+<img src="../figures/06hurakan_mean_trajectory.png" alt="Scale selected" />
+
+Figure 5. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
+
+### Active Components<a name="activities"></a>
+
+In the Hurakán system, the following activities can be performed using the available information:
 - **Central Panel.**
   <img src="../figures/spaghetti_icon.png"
        alt="Central and Spaghetti Panel"
@@ -71,20 +85,6 @@ Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system
 - **Centering Button.** <img src="../figures/centering_icon.png"
        alt="Saffir-Simpson Category Box"
        width="30">When clicked, this icon centers the map on Mexico at a 300 km scale.
-- **Map Scale.** <img src="../figures/scale_icon.png"
-       alt="Saffir-Simpson Category Box"
-       width="60">The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
-
-- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
-- **Region of Interest (ROI) Outline.** The ROI boundaries are faintly outlined on the maps. Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
-
-<img src="../figures/06hurakan_mean_trajectory.png" alt="Scale selected" />
-
-Figure 5. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
-
-## Activities<a name="activities"></a>
-
-In the Hurakán system, the following activities can be performed using the available information:
 - **Date Selection.**<img src="../figures/spaghetti_icon.png"
        alt="Central and Spaghetti Panel"
        width="100"> If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
