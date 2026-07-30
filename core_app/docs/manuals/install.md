@@ -34,7 +34,7 @@ Hurakán also requires atmospheric data for a specific date, such as the current
 
 
 ### Installation
-````markdown
+
 ### 1. Clone the repository
 
 ```bash
@@ -223,19 +223,22 @@ sudo systemctl start download_weather.service
 sudo systemctl stop download_weather.service
 sudo systemctl disable download_weather.service
 ```
-````
+
 
 
 
 ## Usage <a name = "usage"></a>
-To use the application, from a client machine
-```````````````````````````````````````````````````````````````````````````````````
-Open http://127.0.0.1:8081 to view in the browser.
-```````````````````````````````````````````````````````````````````````````````````
-For detailed information see [User Manual](./usermanual.md)
+
+To use the application from a client machine, open `http://<server-address>:8081` in a web browser.
+
+If the browser is running on the server itself, use `http://127.0.0.1:8081`.
+
+For detailed information, see the [User Manual](./usermanual.md).
+
+
 
 ## Deployment <a name = "deployment"></a>
-As mentioned, you can build the Docker image in Windows, macOS or GNU/Linux, but you must run the container in the same OS version (for example, build on Windows 11 and run on Windows 11).
+As mentioned, you can build the Docker image on Windows, macOS, or GNU/Linux. However, the container should run on the same operating system and version used to build the image—for example, build it on Windows 11 and run it on Windows 11.
 
 To run the Docker container:
 ```````````````````````````````````````````````````````````````````````````````````
@@ -246,6 +249,10 @@ To stop the running services and remove the containers, networks and images defi
 ```````````````````````````````````````````````````````````````````````````````````
 docker compose down
 ```````````````````````````````````````````````````````````````````````````````````
+
+
+
+
 
 ## Software Tools Employed <a name = "built_using"></a>
 - [Flask](https://flask.palletsprojects.com/) - Lightweight WSGI web application framework
