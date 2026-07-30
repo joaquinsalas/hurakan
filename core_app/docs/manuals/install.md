@@ -289,7 +289,7 @@ docker compose down
 - **ROI** — Region of Interest: a geographic area selected for data processing and analysis. The plural form is **ROIs**.
 - **TC** — Tropical Cyclone: a rotating, organized storm system that forms over tropical or subtropical waters. The plural form is **TCs**.
 - **WSGI** — Web Server Gateway Interface: a standard interface between Python web applications and web servers.
-- 
+
 
 ## Authors <a name = "authors"></a>
 The project has benefited by the participation of the following [contributors](https://github.com/joaquinsalas/hurakan/blob/main/acknowledgments/acknowledgments.md).
