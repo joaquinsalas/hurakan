@@ -80,16 +80,17 @@ In the Hurakán system, the following activities can be performed using the avai
   The *Spaghetti* button toggles between the individual ensemble trajectories and the most probable overall trajectory for a system classified as a tropical storm or stronger. Date buttons are provided for each trajectory cluster considered mature enough for this classification.
   By default, the spaghetti trajectories are displayed. Each track shows the forecast wind speed using the Saffir-Simpson colors, together with its probable starting and ending points for the selected date. The starting point is green, and the ending point is dark gray and can be selected to display additional information. This view is available only when the cluster and classification analyses identify an ensemble capable of describing a tropical storm or stronger.
   Each of the 50 atmospheric scenarios may contain an undetermined number of trajectories. Wind speeds represent averages over 0.25-degree cells and may therefore be lower than the strongest observed gusts.
-- **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
+  - **Date Selection.**<img src="../figures/spaghetti_icon.png"
+       alt="Central and Spaghetti Panel"
+       width="100"> If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
+  - **Cone of Uncertainty View.** When the *Spaghetti* button is turned on, the cone of uncertainty, the most likely trajectory, and an uncertainty band extending two standard deviations on either side are displayed (see Figure 5). This occurs when an ensemble of trajectories forms a structure mature enough to represent a tropical storm or stronger. In this case, the system predicts a tropical cyclone with a particular trajectory. For the trajectories associated with a given timestamp, an area with a width equal to two standard deviations is shown along the forecast trajectory.
 - **Zoom Controls.** <img src="../figures/zoom_icon.png"
        alt="Saffir-Simpson Category Box"
        width="30">The map view can be zoomed in or out using the mouse wheel or by clicking the `+` and `-` symbols at the upper-left corner of the screen. The zoom range extends from 10 m to 1000 km.
 - **Centering Button.** <img src="../figures/centering_icon.png"
        alt="Saffir-Simpson Category Box"
        width="30">When clicked, this icon centers the map on Mexico at a 300 km scale.
-- **Date Selection.**<img src="../figures/spaghetti_icon.png"
-       alt="Central and Spaghetti Panel"
-       width="100"> If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
+
 - **Trajectory Information.** For a trajectory, the user can click its endpoints to display its probable starting or ending date (see Figure 6). Users may also click individual trajectories to view forecast information at intermediate points along a tropical cyclone’s potential track. This information includes the UTC date and time, wind speed in km/h, Saffir–Simpson category, and mean sea-level pressure in hPa.
 - **Interactive Visualization.** The map center can be moved by right-clicking and dragging the mouse.
 - **Zooming In/Out.**<img src="../figures/zoom_icon.png"
