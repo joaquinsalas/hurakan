@@ -35,7 +35,7 @@ Hurakán also requires atmospheric data for a specific date, such as the current
 
 ### Installation
 
-### 1. Clone the repository
+#### 1. Clone the repository
 
 ``````````````````````````````````````````````````````````````````````````````````
 git clone https://github.com/joaquinsalas/hurakan
@@ -48,7 +48,7 @@ git clone https://github.com/joaquinsalas/hurakan
 cd hurakan
 ```
 
-### 2. Create a virtual environment
+#### 2. Create a virtual environment
 
 The required libraries will be installed only inside the virtual environment.
 
