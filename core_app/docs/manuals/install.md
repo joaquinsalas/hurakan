@@ -7,7 +7,7 @@
 - [Usage](#usage)
 - [Software Tools Employed](#built_using)
 - [TODO](../TODO.md)
-- [acronyms](#acronyms)
+- [Acronyms](#acronyms)
 - [Authors](#authors)
 - [Acknowledgments](#acknowledgement)
 
