@@ -88,7 +88,7 @@ In the Hurakán system, the following activities can be performed using the avai
 - **Date Selection.**<img src="../figures/spaghetti_icon.png"
        alt="Central and Spaghetti Panel"
        width="100"> If a tropical cyclone has been classified as a tropical storm or stronger, one or more dates will be available for selection. Select the date of the data to be reviewed. In this case, the most likely trajectory is displayed as a dashed black line with an arrow at its endpoint. Clicking *Spaghetti* toggles back to the trajectory view.
-- **Initial and Final Dates.** For a trajectory, the user can click its endpoints to display its probable starting or ending date.
+- **Trajectory Information.** For a trajectory, the user can click its endpoints to display its probable starting or ending date (see Figure 6). Users may also click individual trajectories to view forecast information at intermediate points along a tropical cyclone’s potential track. This information includes the UTC date and time, wind speed in km/h, Saffir–Simpson category, and mean sea-level pressure in hPa.
 - **Interactive Visualization.** The map center can be moved by right-clicking and dragging the mouse.
 - **Zooming In/Out.**<img src="../figures/zoom_icon.png"
        alt="Saffir-Simpson Category Box"
@@ -97,6 +97,18 @@ In the Hurakán system, the following activities can be performed using the avai
        alt="Saffir-Simpson Category Box"
        width="30"> When clicked, the symbol below the `+` and `-` controls at the upper-left corner centers the map on Mexico at a 300 km scale.
 
+
+
+<img src="../figures/07starting_point.png" alt="Scale selected" />
+
+Figure 6. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
+
+
+<img src="../figures/velocity_intra_trajectory.png" alt="Scale selected" />
+
+Figure 7. Tropical Cyclone Norma. Norma formed on October 15, 2023, and evolved into a Category 4 hurricane. It made landfall on Baja California Sur as a Category 1 hurricane. After crossing the state, it re-emerged over the Sea of Cortez and made landfall in Sinaloa as a tropical depression. Here, we show the most likely trajectory and the cone of uncertainty.
+
+
 ## Examples of Detection and Tracking<a name="examples"></a>
 
 This section analyzes several cases to demonstrate the system's hurricane detection and tracking capabilities. Tropical cyclones are identified using the NOAA and NHC nomenclature for tropical cyclone genesis, which indicates the year (YYYY), the day of the year (DDD), the hemisphere (N or S), the latitude in degrees (LLL), and the longitude in degrees (HHH). The assigned storm name is also used.
@@ -104,7 +116,7 @@ This section analyzes several cases to demonstrate the system's hurricane detect
 ### Tropical Cyclone 2023294N09264 (Otis)
 <img src="../figures/otis_app.PNG" alt="20231001 Tropical Cyclone Otis" />
 
-Figure 11. 20231001 Tropical Cyclone Otis.
+Figure 8. 20231001 Tropical Cyclone Otis.
 
 - Category 5 hurricane (SSHWS)
 - Duration: October 22–October 25
@@ -113,7 +125,7 @@ Figure 11. 20231001 Tropical Cyclone Otis.
 ### Tropical Cyclone Lidia
 <img src="../figures/lidia_app.PNG" alt="20231003 Tropical Cyclone Lidia" />
 
-Figure 12. 20231003 Tropical Cyclone Lidia.
+Figure 9. 20231003 Tropical Cyclone Lidia.
 
 - Category 4 hurricane (SSHWS)
 - Duration: October 3–October 11
