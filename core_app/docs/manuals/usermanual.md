@@ -60,7 +60,10 @@ Figure 4. Tropical Cyclone Genevieve. Example of the interactive Hurakán system
 - **Map Scale.** <img src="../figures/scale_icon.png"
        alt="Saffir-Simpson Category Box"
        width="60">The current map scale is indicated by the horizontal width of the rectangle at the bottom-left corner of the window, just below the Saffir-Simpson Category Box.
-- **Region of Interest (ROI) Outline.** The ROI boundaries are faintly outlined on the maps. Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
+- **Region of Interest (ROI) Outline.** The ROI boundaries (see Figure 1) are faintly outlined on the maps (Figure 4). Their purpose is to indicate the boundaries of the regions for which WeatherNext 2 data are downloaded while remaining unobtrusive relative to the other displayed information.
+- **User's Manual Information.**<img src="../figures/user_manual_icon.png"
+       alt="Saffir-Simpson Category Box"
+       width="60"> A link to the present document is added to the map. This offer the possibility of bringing a detailed description of the different elements presented and how to use them more effectively. 
 
 <img src="../figures/06hurakan_mean_trajectory.png" alt="Scale selected" />
 
